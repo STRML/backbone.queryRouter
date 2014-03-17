@@ -2,24 +2,63 @@ describe "Backbone.queryRouter tests", ->
 
   describe "Test query matching", ->
 
-    beforeEach ->
-      Backbone.history.navigate('queryTest?foo=bar&nested[prop]=value', {trigger: true})
+    initialRoute = 'queryTest?foo=bar&bar=foo&nested[prop]=value&nested[prop2]=value2&nested2[prop3]=value3'
+    changedRoute = 'queryTest?foo=bar&bar=baz&nested[prop]=value&nested[prop5]=value4&nested2[prop3]=value5'
 
-    it "Listens to a basic query change", ->
-      debugger;
-      queryCb = jasmine.createSpy('queryCb')
-      Backbone.history.queryHandler(['foo'], queryCb)
-      Backbone.history.navigate('queryTest?foo=baz', {trigger: true})
-      expect(queryCb).toHaveBeenCalled()
+    describe "Positive query matching", ->
 
-    it "Listened to the parent of a nested change", ->
-      queryCb = jasmine.createSpy('queryCb')
-      Backbone.history.queryHandler(['nested'], queryCb)
-      Backbone.history.navigate('queryTest?foo=baz', {trigger: true})
-      expect(queryCb).toHaveBeenCalled()
+      queryCb = null
+      beforeEach ->
+        Backbone.history.navigate(initialRoute, {trigger: true})
+        Backbone.history.queryHandlers = [];
+        queryCb = jasmine.createSpy('queryCb')
 
-    it "Listened to the child of a nested change", ->
-      queryCb = jasmine.createSpy('queryCb')
-      Backbone.history.queryHandler(['nested.prop'], queryCb)
-      Backbone.history.navigate('queryTest?foo=baz', {trigger: true})
-      expect(queryCb).toHaveBeenCalled()
+      afterEach ->
+        Backbone.history.navigate(changedRoute, {trigger: true})
+        expect(queryCb).toHaveBeenCalled()
+
+      it "Listens to a basic query change", ->
+        Backbone.history.queryHandler(['bar'], queryCb)
+
+      it "Accepts a single string instead of an array", ->
+        Backbone.history.queryHandler('bar', queryCb)
+
+      it "Listens to an changed object value", ->
+        Backbone.history.queryHandler(['nested'], queryCb)
+
+      it "Listens to a removed child change", ->
+        Backbone.history.queryHandler(['nested.prop2'], queryCb)
+
+      it "Listens to an added child change", ->
+        Backbone.history.queryHandler(['nested.prop5'], queryCb)
+
+      it "Listens to a changed value of a child", ->
+        Backbone.history.queryHandler(['nested2.prop3'], queryCb)
+
+
+    describe "Negative query matching", ->
+
+      queryCb = null
+      beforeEach ->
+        Backbone.history.navigate(initialRoute, {trigger: true})
+        Backbone.history.queryHandlers = [];
+        queryCb = jasmine.createSpy('queryCb')
+
+      afterEach ->
+        Backbone.history.navigate(changedRoute, {trigger: true})
+        expect(queryCb).not.toHaveBeenCalled()
+
+      it "Doesn't fire if the value listened to doesn't exist", ->
+        Backbone.history.queryHandler(['notHere'], queryCb)
+
+      it "Doesn't fire if the value listened to hasn't changed", ->
+        Backbone.history.queryHandler(['foo'], queryCb)
+
+      it "Accepts a string instead of an array", ->
+        Backbone.history.queryHandler('foo', queryCb)
+
+      it "Doesn't fire on an unchanged object value", ->
+        Backbone.history.queryHandler(['nested.prop'], queryCb)
+
+      it "Doesn't fire on a missing object value", ->
+        Backbone.history.queryHandler(['nested.notHere'], queryCb)
