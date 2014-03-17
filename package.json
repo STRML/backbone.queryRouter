@@ -2,9 +2,9 @@
   "name": "backbone.queryRouter",
   "version": "0.0.1",
   "description": "Trigger routes from multiple routers based on querystring parameters.",
-  "main": "backbone.queryRouter.js",
+  "main": "src/backbone.queryRouter.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "grunt test"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,17 @@
   "homepage": "https://github.com/STRML/backbone.queryRouter",
   "devDependencies": {
     "grunt": "^0.4.4",
-    "grunt-contrib-uglify": "^0.4.0"
+    "grunt-contrib-uglify": "^0.4.0",
+    "browserify": "^3.32.1",
+    "grunt-browserify": "^1.3.2",
+    "grunt-contrib-coffee": "^0.10.1",
+    "matchdep": "^0.3.0",
+    "grunt-contrib-clean": "^0.5.0",
+    "grunt-contrib-jasmine": "^0.6.1"
+  },
+  "dependencies": {
+    "underscore": "^1.6.0",
+    "backbone": "^1.1.2",
+    "deep-diff": "^0.1.4"
   }
 }

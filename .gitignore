@@ -1,3 +1,6 @@
 node_modules/
 bower_components/
+.grunt/
 npm-debug.log
+_SpecRunner.html
+**/build
