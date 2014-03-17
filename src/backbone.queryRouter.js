@@ -57,10 +57,9 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
     // this way, you don't have to debounce your handlers since they are only called once,
     // even if multiple query items change.
     _.each(this.queryHandlers, function(handler) {
-      // Wrap in array if we were passed an unwrapped value.
-      var bindings = _.isArray(handler.bindings) ? handler.bindings : [handler.bindings];
-      if (_.intersection(diffs, bindings).length) {
-        handler.callback(fragment);
+      var intersections = _.intersection(diffs, handler.bindings);
+      if (intersections.length) {
+        handler.callback(fragment, _.pick(query, intersections));
       }
     });
   },
@@ -164,7 +163,65 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
  * @type {Backbone.Router}
  */
 var QueryRouter = Backbone.Router.extend(/** @lends QueryRouter# */{
-  queryRoutes: {},
+  /**
+   * Bind query routes. They are expected to be attached in the following configuration:
+   * @example
+   *   queryRoutes: [
+   *     'key1,key2,key3': 'handlerName',
+   *     'q, sort, rows': function() { // ... },
+   *     'nested.object': 'deepHandler'
+   *   }
+   *
+   * Remember that handlers will only fire once per navigation. If for some reason you'd like
+   * a handler to fire for each individual change, bind to the 'change:{key}' events on 
+   * Backbone.history.query, which is just a Backbone.Model (and fires all of the usual
+   * events).
+   */
+  _bindRoutes: function() {
+    if (!this.queryRoutes) return;
+    this.queryRoutes = _.result(this, 'queryRoutes');
+    var qRoute, qRoutes = _.keys(this.queryRoutes);
+    while ((qRoute = qRoutes.pop()) != null) {
+      this.queryHandler(qRoute, this.queryRoutes[qRoute]);
+    }
+  },
+
+  /**
+   * Bind a queryHandler. Very similar to Backbone.Router#route, except that args
+   * are provided by Backbone.history#queryHandler, rather than being extracted
+   * in the router from the fragment.
+   * @param  {String|array}  bindings Query key bindings.
+   * @param  {String}   [name]        Listener name.
+   * @param  {Function} callback      Listener callback.
+   */
+  queryHandler: function(bindings, name, callback) {
+    bindings = this._normalizeBindings(bindings);
+    if (_.isFunction(name)) {
+      callback = name;
+      name = '';
+    }
+    if (!callback) callback = this[name];
+    var router = this;
+    Backbone.history.queryHandler(bindings, function(fragment, args) {
+      router.execute(callback, [args]);
+      router.trigger.apply(router, ['route:' + name].concat(args));
+      router.trigger('route', name, args);
+      Backbone.history.trigger('route', router, name, args);
+    });
+    return this;
+  },
+
+  /**
+   * Normalize bindings - convert to array and trim whitespace.
+   * @param  {String} bindings Bindings definition.
+   * @return {Array}           Normalized bindings.
+   */
+  _normalizeBindings: function(bindings) {
+    if (_.isString(bindings)) {
+      bindings = bindings.split(',');
+    }
+    return _.invoke(bindings, 'trim');
+  }
 });
 
 // Override default Backbone.Router constructor.
