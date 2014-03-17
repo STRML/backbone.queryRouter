@@ -1,0 +1,28 @@
+{
+  "name": "backbone.queryRouter",
+  "version": "0.0.1",
+  "description": "Trigger routes from multiple routers based on querystring parameters.",
+  "main": "backbone.queryRouter.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/STRML/backbone.queryRouter.git"
+  },
+  "keywords": [
+    "backbone",
+    "querystring",
+    "router"
+  ],
+  "author": "Samuel Reed <sam@tixelated.com> (http://strml.net/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/STRML/backbone.queryRouter/issues"
+  },
+  "homepage": "https://github.com/STRML/backbone.queryRouter",
+  "devDependencies": {
+    "grunt": "^0.4.4",
+    "grunt-contrib-uglify": "^0.4.0"
+  }
+}
