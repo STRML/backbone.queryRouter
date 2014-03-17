@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>README.md</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="doc-style.css" />
+  <script src="doc-filelist.js"></script>
+  <script>
+    var relativeDir = "", thisFile = "README.md", defaultSidebar = true;
+  </script>
+  <script src="doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h1">
+        <a href="#backbone.queryrouter">Backbone.queryRouter</a>
+      </div>
+      <div class="heading h2">
+        <a href="#download">Download</a>
+      </div>
+      <div class="heading h2">
+        <a href="#description">Description</a>
+      </div>
+      <div class="heading h2">
+        <a href="#usage">Usage</a>
+      </div>
+      <div class="heading h2">
+        <a href="#documentation">Documentation</a>
+      </div>
+      <div class="heading h2">
+        <a href="#helper%20functions">Helper Functions</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="docs markdown">
+<div class="pilwrap" id="backbone.queryrouter">
+  <h1>
+    <a href="#backbone.queryrouter" name="backbone.queryrouter" class="pilcrow">&#182;</a>
+    Backbone.queryRouter
+  </h1>
+</div>
+
+
+<p>Execute multiple routes per URL change using querystring properties.</p>
+
+
+<div class="pilwrap" id="download">
+  <h2>
+    <a href="#download" name="download" class="pilcrow">&#182;</a>
+    Download
+  </h2>
+</div>
+
+
+<p>For browsers:</p>
+
+<p><a href="raw/master/dist/backbone.queryRouter.browser.js">Development Version</a> </p>
+
+<p><a href="raw/master/dist/backbone.queryRouter.browser.min.js">Production Version</a></p>
+
+<p>For Node:</p>
+
+
+<div class="highlight"><pre><code>npm install backbone.queryRouter
+</code></pre></div>
+
+
+
+
+<div class="pilwrap" id="description">
+  <h2>
+    <a href="#description" name="description" class="pilcrow">&#182;</a>
+    Description
+  </h2>
+</div>
+
+
+<p>Modern web applications have many moving parts, and traditional webapp routing is far too restrictive
+to deal with real-world apps.</p>
+
+<p>A modern webapp may have many independent bits of serializable state that must be correctly transmitted
+when a URL is sent to another user. For example, a music app may want to send the current song, position within
+the song, and location within a browsing window. A search app may want to transmit the current query,
+selected results, expansion of those results, and user preferences.</p>
+
+<p>It is not always possible to store complex state in localStorage or cookies, if you want to transmit that
+complex state to other users via a URL. It can very quickly become unwieldy to create massive 'multi-routes',
+where sections of the URL delegate to subrouters. Every time a new widget with state is added, a new 
+section must be added to the route, and all links updated. <code>There has to be a better way!</code></p>
+
+<p>Querystrings are a perfect solution to this problem, and with HTML5 pushState, they can easily be used
+on the client and the server.</p>
+
+
+<div class="pilwrap" id="usage">
+  <h2>
+    <a href="#usage" name="usage" class="pilcrow">&#182;</a>
+    Usage
+  </h2>
+</div>
+
+
+<p>TODO</p>
+
+
+<div class="pilwrap" id="documentation">
+  <h2>
+    <a href="#documentation" name="documentation" class="pilcrow">&#182;</a>
+    Documentation
+  </h2>
+</div>
+
+
+<p>Generated documentation is <a href="raw/master/doc/src/backbone.queryRouter.js.html">available here</a>.</p>
+
+
+<div class="pilwrap" id="helper%20functions">
+  <h2>
+    <a href="#helper%20functions" name="helper%20functions" class="pilcrow">&#182;</a>
+    Helper Functions
+  </h2>
+</div>
+
+
+<p>Backbone.queryRouter comes with a few helper functions that help you modify the current URL.</p>
+
+<p>TODO describe <code>changeBaseRoute</code></p>
+
+<p>TODO describe <code>add/remove/set/replaceQuery</code>
+FIXME use a backbone model for state?</p></div>
+  </div>
+</body>
+</html>
