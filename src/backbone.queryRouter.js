@@ -1,6 +1,7 @@
 'use strict';
-var Backbone = require('backbone');
-var _ = require('underscore');
+// Is there a better way to pick up window globals?
+var Backbone = (window && window.Backbone) || require('backbone');
+var _ = (window && window._) || require('underscore');
 var querystring = require('querystring');
 var diff = require('deep-diff');
 

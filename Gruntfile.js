@@ -15,15 +15,10 @@ module.exports = function(grunt) {
       dist: {
         options: {
           external: ['backbone', 'underscore'],
-          insertGlobals: false,
           debug: false
         },
         src: ['src/*.js'],
         dest: 'dist/backbone.queryRouter.browser.js'
-      },
-      test: {
-        src: ['src/*.js'],
-        dest: 'test/build/backbone.queryRouter.js'
       }
     },
     uglify: {
@@ -50,15 +45,19 @@ module.exports = function(grunt) {
     },
     jasmine: {
       test: {
-        src: 'test/build/backbone.queryRouter.js',
+        src: 'dist/backbone.queryRouter.browser.js',
         options: {
-          specs: 'test/spec/build/*.js'
+          specs: 'test/spec/build/*.js',
+          vendor: [
+            'bower_components/underscore/underscore.js',
+            'bower_components/backbone/backbone.js'
+          ]
         }
       }
     },
     docker : {
       dist : {
-        src: ['src/*.js'], 
+        src: ['src/*.js', 'README.md'], 
         dest: 'doc',
         options: {
           lineNums: true
@@ -74,12 +73,11 @@ module.exports = function(grunt) {
   });
 
 
-  
   // Load all grunt tasks in package.json
   _.each(matchdep.filterAll('grunt-*'), function(pkgName){
     grunt.loadNpmTasks(pkgName);
   });
-  grunt.registerTask('test', ['clean:test', 'browserify:test', 'coffee:test', 'jasmine']);
+  grunt.registerTask('test', ['clean:test', 'browserify', 'coffee:test', 'jasmine']);
   grunt.registerTask('release', ['clean:dist', 'browserify', 'uglify']);
   grunt.registerTask('default', ['jshint', 'test', 'release', 'docker']);
 };
