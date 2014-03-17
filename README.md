@@ -8,9 +8,9 @@ Download
 
 For browsers:
 
-[Development Version](raw/master/dist/backbone.queryRouter.browser.js) 
+[Development Version](dist/backbone.queryRouter.browser.js) 
 
-[Production Version](raw/master/dist/backbone.queryRouter.browser.min.js)
+[Production Version](dist/backbone.queryRouter.browser.min.js)
 
 For Node:
 
