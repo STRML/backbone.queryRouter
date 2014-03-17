@@ -12,6 +12,18 @@ var diff = require('deep-diff');
 var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
 
   /**
+   * Override history constructor to init some properties and set the embedded query 
+   * model listener.
+   * @constructs
+   */
+  constructor: function() {
+    this.previousQuery = {};
+    this.queryHandlers = [];
+    this.listenTo(this.query, 'change', this.onQueryModelChange);
+    Backbone.History.call(this);
+  },
+
+  /**
    * Extracts querystrings from routes.
    * @type {RegExp}
    */
@@ -24,9 +36,6 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
    * @param {Object} options Navigation options.
    */
   loadQuery: function(fragment, options) {
-    // init
-    if (!this.previousQuery) this.previousQuery = {};
-
     var query = this._fragmentToQueryObject(fragment);
     var previous = this.previousQuery;
 
@@ -38,12 +47,19 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
 
     if (!diffs.length) return;
 
+    // Set embedded model to new query object, firing 'change' events.
+    this.stopListening(this.query, 'change', this.onQueryModelChange);
+    this.query.set(query);
+    this.listenTo(this.query, 'change', this.onQueryModelChange);
+
     // Call each function that subscribes to these items.
     // This is intentional, rather than fire events on each changed item;
     // this way, you don't have to debounce your handlers since they are only called once,
     // even if multiple query items change.
     _.each(this.queryHandlers, function(handler) {
-      if (_.union(diffs, handler.bindings).length) {
+      // Wrap in array if we were passed an unwrapped value.
+      var bindings = _.isArray(handler.bindings) ? handler.bindings : [handler.bindings];
+      if (_.intersection(diffs, bindings).length) {
         handler.callback(fragment);
       }
     });
@@ -98,7 +114,6 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
    * @param  {Function} callback Callback to call when these keys change.
    */
   queryHandler: function(bindings, callback) {
-    if (!this.queryHandlers) this.queryHandlers = [];
     this.queryHandlers.push({bindings: bindings, callback: callback});
   },
 
@@ -149,12 +164,11 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
  * @type {Backbone.Router}
  */
 var QueryRouter = Backbone.Router.extend(/** @lends QueryRouter# */{
-
+  queryRoutes: {},
 });
 
 // Override default Backbone.Router constructor.
 Backbone.Router = QueryRouter;
+
 // Replace Backbone.history.
 Backbone.history = new QueryHistory();
-
-
