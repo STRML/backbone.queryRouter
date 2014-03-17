@@ -6,14 +6,16 @@ var diff = require('deep-diff');
 
 /**
  * Backbone.History overrides.
+ * @type {Backbone.History}
  */
-var QueryRouter = module.exports = Backbone.QueryRouter = Backbone.Router.extend( /** @lends QueryRouter# **/{
+var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
 
   /**
    * Extracts querystrings from routes.
    * @type {RegExp}
    */
   queryMatcher: /^([^?]*?)(?:\?([\s\S]*))?$/,
+  query: new Backbone.Model(),
 
   /**
    * Parse a fragment into a query object and call handlers matching.
@@ -36,6 +38,9 @@ var QueryRouter = module.exports = Backbone.QueryRouter = Backbone.Router.extend
     if (!diffs.length) return;
 
     // Call each function that subscribes to these items.
+    // This is intentional, rather than fire events on each changed item;
+    // this way, you don't have to debounce your handlers since they are only called once,
+    // even if multiple query items change.
     _.each(this.queryHandlers, function(handler) {
       if (_.union(diffs, handler.bindings).length) {
         handler.callback(fragment);
@@ -57,9 +62,8 @@ var QueryRouter = module.exports = Backbone.QueryRouter = Backbone.Router.extend
 
   /**
    * Add loadQuery hook.
-   * Also add 'forceTrigger' option that will trigger a route regardless of whether 
+   * Add 'forceTrigger' option that will trigger a route regardless of whether 
    * or not we're already at that route.
-   *
    * Also trigger '[before, after]Navigate' event.
    *
    * Backbone.History is the prototype name, Backbone.history is the actual object, 
@@ -92,7 +96,7 @@ var QueryRouter = module.exports = Backbone.QueryRouter = Backbone.Router.extend
    * @param  {Array}   bindings  Query keys to listen to.
    * @param  {Function} callback Callback to call when these keys change.
    */
-  query: function(bindings, callback) {
+  queryHandler: function(bindings, callback) {
     if (!this.queryHandlers) this.queryHandlers = [];
     this.queryHandlers.push({bindings: bindings, callback: callback});
   },
@@ -138,5 +142,18 @@ var QueryRouter = module.exports = Backbone.QueryRouter = Backbone.Router.extend
     return querystring.parse(qs);
   }
 });
+
+/**
+ * Backbone.Router overrides.
+ * @type {Backbone.Router}
+ */
+var QueryRouter = Backbone.Router.extend(/** @lends QueryRouter# */{
+
+});
+
+// Override default Backbone.Router constructor.
+Backbone.Router = QueryRouter;
+// Replace Backbone.history.
+Backbone.history = new QueryHistory();
 
 

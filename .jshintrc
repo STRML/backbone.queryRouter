@@ -1,0 +1,24 @@
+{
+    "trailing"  : false,
+    "sub"       : true,
+    "laxcomma"  : true,
+    "bitwise"   : true,
+    "nonew"     : false,
+    "undef"     : true,
+    "node"      : true,
+    "eqnull"    : true,
+    "strict"    : true,
+    "quotmark"  : false,
+    "unused"    : false,
+    "newcap"    : false,
+    "predef"   : [
+        "define",
+        "require",
+        "setTimeout",
+        "setInterval",
+        "clearTimeout"
+    ],
+    "browser" : true,
+    "devel": true,
+    "expr": true
+}

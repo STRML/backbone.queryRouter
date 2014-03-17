@@ -55,7 +55,22 @@ module.exports = function(grunt) {
           specs: 'test/spec/build/*.js'
         }
       }
-    }
+    },
+    docker : {
+      dist : {
+        src: ['src/*.js'], 
+        dest: 'doc',
+        options: {
+          lineNums: true
+        }
+      }
+    },
+    jshint: {
+      validate: {
+        src: ['src/**/*.js']
+      },
+      options: grunt.file.readJSON('.jshintrc')
+    },
   });
 
 
@@ -66,5 +81,5 @@ module.exports = function(grunt) {
   });
   grunt.registerTask('test', ['clean:test', 'browserify:test', 'coffee:test', 'jasmine']);
   grunt.registerTask('release', ['clean:dist', 'browserify', 'uglify']);
-  grunt.registerTask('default', ['test', 'release']);
+  grunt.registerTask('default', ['jshint', 'test', 'release', 'docker']);
 };

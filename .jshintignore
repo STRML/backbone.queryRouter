@@ -1,0 +1,5 @@
+dist/
+test/**/build/
+doc/
+node_modules/
+bower_components/
