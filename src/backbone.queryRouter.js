@@ -15,6 +15,7 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
    * Override history constructor to init some properties and set the embedded query 
    * model listener.
    * @constructs
+   * @type {Backbone.History}
    */
   constructor: function() {
     this.previousQuery = {};
@@ -28,6 +29,12 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
    * @type {RegExp}
    */
   queryMatcher: /^([^?]*?)(?:\?([\s\S]*))?$/,
+
+  /**
+   * Model emcompassing current query state. You can read and set properties
+   * on this Model and `Backbone.history.navigate()` will automatically be called.
+   * @type {Backbone.Model}
+   */
   query: new Backbone.Model(),
 
   /**
@@ -44,7 +51,6 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
 
     // Diff new and old queries.
     var diffs = this._getDiffs(previous, query);
-
     if (!diffs.length) return;
 
     // Set embedded model to new query object, firing 'change' events.
@@ -84,6 +90,8 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
    *
    * Backbone.History is the prototype name, Backbone.history is the actual object, 
    * but Backbone.History stores the 'started' flag. Whatever.
+   * @param {String} fragment History fragment.
+   * @param {Object} options  Navigation options.
    */
   navigate: function(fragment, options) {
     if (!Backbone.History.started) return false;
@@ -104,7 +112,7 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
     if (options.forceTrigger && this.fragment === fragment) {
       this.loadUrl(fragment);
     } else {
-      // Call navigate on prototype since we just overrode it
+      // Call navigate on prototype since we just overrode it.
       Backbone.History.prototype.navigate.call(this, fragment, options);
     }
 
@@ -189,18 +197,22 @@ var RouterProto = Backbone.Router.prototype;
  */
 var QueryRouter = Backbone.Router.extend(/** @lends QueryRouter# */{
   /**
-   * Bind query routes. They are expected to be attached in the following configuration:
-   * @example
-   *   queryRoutes: [
-   *     'key1,key2,key3': 'handlerName',
-   *     'q, sort, rows': function() { // ... },
-   *     'nested.object': 'deepHandler'
-   *   }
-   *
+   * Bind query routes.
+   * 
    * Remember that handlers will only fire once per navigation. If for some reason you'd like
    * a handler to fire for each individual change, bind to the 'change:{key}' events on 
    * Backbone.history.query, which is just a Backbone.Model (and fires all of the usual
    * events).
+   *
+   * They are expected to be attached in the following configuration:
+   * 
+   * ```javascript
+   * queryRoutes: [
+   *   'key1,key2,key3': 'handlerName',
+   *   'q, sort, rows': function() { // ... },
+   *   'nested.object': 'deepHandler'
+   * ]
+   * ```
    */
   _bindRoutes: function() {
     if (!this.queryRoutes) return;
