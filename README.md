@@ -51,11 +51,12 @@ var QueryAwareRouter = Backbone.Router.extend({
     'albums/:songNumber': 'viewSong'
   },
 
-  // QueryRoutes are defined here. They are defined similarly to normal routes, in the format:
+  // QueryRoutes are defined here. They are defined in the format:
   // {String} keys : {String} handlerName
   queryRoutes: {
     // Here you can specify which keys you want to listen to.
-    // The attached handler will be fired each time any of the keys are added, removed, or changed.
+    // The attached handler will be fired each time any of the keys are 
+    // added, removed, or changed.
     'volume': 'setVolume',
     // To listen to multiple keys, separate them with commas. Whitespace is ignored.
     'playState, songID' : 'playSong'
@@ -63,16 +64,17 @@ var QueryAwareRouter = Backbone.Router.extend({
 
   // Each queryHandler is called with two parameters:
   // @param {Array} changedKeys Array of changed keys that caused this handler to fire.
-  // @param {Object} queryObj   Subset of current query containing the keys in `changedKeys`.
-  //                            To get the full query, use `Backbone.history.query.toJSON()`
+  // @param {Object} queryObj   Subset of current query containing the keys 
+  //                            in `changedKeys`. To get the full query, 
+  //                            use `Backbone.history.query.toJSON()`
   setVolume: function(changedKeys, queryObj) {
-    // e.g. is the query is changed to '?songID=foo&volume=100', `changedKeys = ['volume']` and
-    // `queryObj = {volume: '100'}`
+    // e.g. if the query is changed to '?songID=foo&volume=100', 
+    // `changedKeys = ['volume']` and `queryObj = {volume: '100'}`
   },
 
   playSong: function(changedKeys, queryObj) {
-    // e.g. if the query is changed to '?songID=foo&volume=100', `changedKeys = ['songID']` and
-    // `queryObj = {songID: 'foo'}`
+    // e.g. if the query is changed to '?songID=foo&volume=100', 
+    // `changedKeys = ['songID']` and `queryObj = {songID: 'foo'}`
   },
 
   // ... more handlers ...
@@ -107,7 +109,7 @@ will automatically fire the associated query handlers, much like calling
 
 ### Backbone.history.resetQuery
 
-Usage: `Backbone.history.resetQuery({key: 'value', nested: {key2: 'value'}})
+Usage: `Backbone.history.resetQuery({key: 'value', nested: {key2: 'value'}})`
 
 Resets the current query value to an entirely new value. Optionally accepts a query string -
 make sure it begins with a `?` so it can be parsed.
