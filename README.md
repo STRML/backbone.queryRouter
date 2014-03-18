@@ -22,6 +22,8 @@ For eyeballs:
 
 [Readable Source](src/backbone.queryRouter.js)
 
+[Docs](http://strml.github.io/backbone.queryRouter/src/backbone.queryRouter.js.html)
+
 Description
 -----------
 
@@ -89,7 +91,7 @@ var QueryAwareRouter = Backbone.Router.extend({
 Documentation
 -------------
 
-Generated documentation is [available here](raw/master/doc/src/backbone.queryRouter.js.html).
+Generated documentation is [available here](http://strml.github.io/backbone.queryRouter/src/backbone.queryRouter.js.html).
 
 Helper Functions
 ----------------
