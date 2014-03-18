@@ -790,6 +790,7 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
   }
 });
 
+var RouterProto = Backbone.Router.prototype;
 /**
  * Backbone.Router overrides.
  * @type {Backbone.Router}
@@ -816,6 +817,7 @@ var QueryRouter = Backbone.Router.extend(/** @lends QueryRouter# */{
     while ((qRoute = qRoutes.pop()) != null) {
       this.queryHandler(qRoute, this.queryRoutes[qRoute]);
     }
+    RouterProto._bindRoutes.apply(this, arguments);
   },
 
   /**
