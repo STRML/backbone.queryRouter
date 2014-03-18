@@ -15,7 +15,7 @@ For browsers:
 For Node:
 
 ```bash
-npm install backbone.queryRouter
+npm install backbone.queryrouter
 ```
 
 Description
@@ -74,7 +74,7 @@ var QueryAwareRouter = Backbone.Router.extend({
     // e.g. if the query is changed to '?songID=foo&volume=100', `changedKeys = ['songID']` and
     // `queryObj = {songID: 'foo'}`
   },
-  
+
   // ... more handlers ...
 });
 

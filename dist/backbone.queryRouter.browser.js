@@ -665,9 +665,10 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
   /**
    * Model emcompassing current query state. You can read and set properties
    * on this Model and `Backbone.history.navigate()` will automatically be called.
+   * If Backbone.NestedModel is loaded, it will be used to support nested change events.
    * @type {Backbone.Model}
    */
-  query: new Backbone.Model(),
+  query: Backbone.NestedModel ? new Backbone.NestedModel() : new Backbone.Model(),
 
   /**
    * Parse a fragment into a query object and call handlers matching.
@@ -678,7 +679,8 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
     var query = this._fragmentToQueryObject(fragment);
     var previous = this.previousQuery;
 
-    // Save previous query.
+    // Save previous query. We intentionally do not use `this.query.previousAttributes()`, as
+    // it can be overwritten by a user set.
     this.previousQuery = query;
 
     // Diff new and old queries.
@@ -687,7 +689,7 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
 
     // Set embedded model to new query object, firing 'change' events.
     this.stopListening(this.query, 'change', this.onQueryModelChange);
-    this.query.set(query);
+    this.resetQuery(query);
     this.listenTo(this.query, 'change', this.onQueryModelChange);
 
     // Call each function that subscribes to these items.
@@ -697,21 +699,22 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
     _.each(this.queryHandlers, function(handler) {
       var intersections = _.intersection(diffs, handler.bindings);
       if (intersections.length) {
-        handler.callback(fragment, _.pick(query, intersections));
+        handler.callback(fragment, intersections, _.pick(query, intersections));
       }
     });
   },
 
   /**
-   * Override loadUrl & watch return value. Trigger event if no route was matched.
+   * Compare previous base fragment to current base fragment. If it is the same,
+   * do not fire the url handler.
+   * @param  {String} fragment History fragment.
    * @return {Boolean} True if a route was matched.
    */
-  loadUrl: function() {
-    var matched = Backbone.History.prototype.loadUrl.apply(this, arguments);
-    if (!matched) {
-      this.trigger('routeNotFound', arguments);
+  loadUrl: function(fragment) {
+    if (this._previousBaseFragment !== this._stripQuery(fragment)) {
+      return Backbone.History.prototype.loadUrl.apply(this, arguments);
     }
-    return matched;
+    return false;
   },
 
   /**
@@ -724,6 +727,9 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
     if (!Backbone.History.started) return false;
     if (!options) options = {};
 
+    // Save base fragment for comparison in loadUrl.
+    this._previousBaseFragment = this._stripQuery(this.fragment);
+
     // Fire querystring routes.
     if (options.trigger) {
       this.loadQuery(fragment, options);
@@ -731,6 +737,18 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
 
     // Call navigate on prototype since we just overrode it.
     Backbone.History.prototype.navigate.call(this, fragment, options);
+  },
+
+  /**
+   * Navigate a base route only, while maintaining the current query.
+   * Strips any querystrings from the input fragment and appends
+   * the current querystring.
+   * @param  {String} fragment Route fragment.
+   * @param  {Object} options  Navigation options.
+   */
+  navigateBase: function(fragment, options) {
+    var currentQuery = this._fragmentToQueryString(Backbone.history.fragment);
+    return this.navigate(this._stripQuery(fragment) + "?" + currentQuery, options);
   },
 
   /**
@@ -742,7 +760,16 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
     var fragment = this.fragment || '';
     var oldQS = querystring.stringify(this.previousQuery);
     var newQS = querystring.stringify(model.toJSON());
-    this.navigate(fragment.replace(oldQS, newQS), {trigger: true});
+
+    // If the old querystring exists, replace it with the new one, otherwise just append.
+    if (oldQS) {
+      fragment = fragment.replace(oldQS, newQS);
+    } else {
+      // No existing querystring, add it directly to the fragment.
+      if (fragment.slice(-1) !== '?') fragment += '?';
+      fragment += newQS;
+    }
+    this.navigate(fragment, {trigger: true});
   },
 
   /**
@@ -752,6 +779,47 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
    */
   queryHandler: function(bindings, callback) {
     this.queryHandlers.push({bindings: bindings, callback: callback});
+  },
+
+  /**
+   * Reset the internal query model to a certain state. Performs set() and unset() internally
+   * to reset the model's attributes to the correct state, while firing the correct events.
+   * Similar to Backbone.Collection.reset(), but with model attributes rather than models.
+   * @param {Object} queryObject New query object.
+   */
+  resetQuery: function(queryObject, options) {
+    if (_.isString(queryObject)) {
+      queryObject = this._fragmentToQueryObject(queryObject);
+    }
+    if (!options) options = {};
+    var queryModel = this.query;
+
+    // Suppresses intermediate 'change' events; 'change:key' will still fire.
+    // This has the added benefit of making the internal `changed` hash actually
+    // correct for this operation, which means previousAttributes() and changedAttributes()
+    // will actually work correctly.
+    queryModel._changing = true;
+
+    // Unset any keys inside the existing query. To disable,
+    // set `{unset: false}` in the options.
+    if (options.unset !== false) {
+      _.each(queryModel.attributes, function(attr, key){
+        if (!queryObject[key]) queryModel.unset(key);
+      });
+    }
+
+    // Set new keys. To disable, set `{set: false}` in the options.
+    if (options.set !== false) {
+      _.each(queryObject, function(attr, key){
+        queryModel.set(key, attr);
+      });
+    }
+
+    // Unset changing flag and fire change event.
+    queryModel._changing = false;
+    if (!options.silent && !_.isEmpty(queryModel.changed)){
+      queryModel.trigger('change', queryModel, options);
+    }
   },
 
   /**
@@ -788,7 +856,11 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
    * @return {Object}          Query object.
    */
   _fragmentToQueryObject: function(fragment) {
-    return querystring.parse(this._fragmentToQueryString(fragment));
+    try {
+      return querystring.parse(this._fragmentToQueryString(fragment));
+    } catch(e) {
+      throw new Error("Unable to parse fragment into query object: " + fragment);
+    }
   },
 
   /**
@@ -800,6 +872,15 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
     if (!fragment) return '';
     var match = fragment.match(this.queryMatcher);
     return match[2] || '';
+  },
+
+  /**
+   * Strip a querystring from a fragment.
+   * @param  {String} fragment Route fragment.
+   * @return {String}          Fragment without query.
+   */
+  _stripQuery: function(fragment) {
+    return fragment ? fragment.split('?')[0] : '';
   }
 });
 
@@ -838,6 +919,17 @@ var QueryRouter = Backbone.Router.extend(/** @lends QueryRouter# */{
   },
 
   /**
+   * Navigate a base route only, while maintaining the current query.
+   * Delegates to `Backbone.history.navigateBase`.
+   * @param  {String} fragment Route fragment.
+   * @param  {Object} options  Navigation options.
+   */
+  navigateBase: function(fragment, options) {
+    Backbone.history.navigateBase(fragment, options);
+    return this;
+  },
+
+  /**
    * Bind a queryHandler. Very similar to Backbone.Router#route, except that args
    * are provided by Backbone.history#queryHandler, rather than being extracted
    * in the router from the fragment.
@@ -852,12 +944,13 @@ var QueryRouter = Backbone.Router.extend(/** @lends QueryRouter# */{
       name = '';
     }
     if (!callback) callback = this[name];
+    if (!callback) throw new Error("QueryHandler not found: " + this[name]);
     var router = this;
-    Backbone.history.queryHandler(bindings, function(fragment, args) {
-      router.execute(callback, [args]);
-      router.trigger.apply(router, ['route:' + name].concat(args));
-      router.trigger('route', name, args);
-      Backbone.history.trigger('route', router, name, args);
+    Backbone.history.queryHandler(bindings, function(fragment, queryKeys, queryObj) {
+      router.execute(callback, [queryKeys, queryObj]);
+      router.trigger.apply(router, ['route:' + name].concat(queryKeys));
+      router.trigger('route', name, queryKeys, queryObj);
+      Backbone.history.trigger('route', router, name, queryKeys, queryObj);
     });
     return this;
   },
