@@ -1,5 +1,7 @@
 describe "Test query matching", ->
 
+  if !Backbone.History.started
+    Backbone.history.start();
   initialRoute = 'queryTest?foo=bar&bar=foo&nested[prop]=value&nested[prop2]=value2&nested2[prop3]=value3'
   changedRoute = 'queryTest?foo=bar&bar=baz&nested[prop]=value&nested[prop5]=value4&nested2[prop3]=value5'
 

@@ -48,7 +48,9 @@ module.exports = function(grunt) {
         src: 'dist/backbone.queryRouter.browser.js',
         options: {
           specs: 'test/spec/build/*.js',
+          helpers: 'test/helpers/build/*.js',
           vendor: [
+            'bower_components/jquery/dist/jquery.js',
             'bower_components/underscore/underscore.js',
             'bower_components/backbone/backbone.js'
           ]

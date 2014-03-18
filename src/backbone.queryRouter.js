@@ -86,9 +86,12 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
    * but Backbone.History stores the 'started' flag. Whatever.
    */
   navigate: function(fragment, options) {
+    if (!Backbone.History.started) return false;
+
     if (!options) options = {};
 
     // Throw a navigate route so we can hook to this elsewhere in the app.
+    // This is usually the event you'll want to listen to.
     this.trigger('beforeNavigate', fragment, options);
 
     // Fire querystring routes.
@@ -98,13 +101,27 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
 
     // Support 'forceTrigger' to trigger a route even if the url hasn't changed.
     // Have to check History.started here if we call loadUrl directly.
-    if (options.forceTrigger && Backbone.history.fragment === fragment && Backbone.History.started) {
+    if (options.forceTrigger && this.fragment === fragment) {
       this.loadUrl(fragment);
     } else {
       // Call navigate on prototype since we just overrode it
-      Backbone.History.prototype.navigate.call(Backbone.history, fragment, options);
+      Backbone.History.prototype.navigate.call(this, fragment, options);
     }
+
+    // Throw an 'afterNavigate' route for those who care.
     this.trigger('afterNavigate', fragment, options);
+  },
+
+  /**
+   * When the query model changes, run all associated routes.
+   * @param  {Model}  model   Attached model.
+   * @param  {Object} options Change options.
+   */
+  onQueryModelChange: function(model, options) {
+    var fragment = this.fragment || '';
+    var oldQS = querystring.stringify(this.previousQuery);
+    var newQS = querystring.stringify(model.toJSON());
+    this.navigate(fragment.replace(oldQS, newQS), {trigger: true});
   },
 
   /**
@@ -150,11 +167,18 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
    * @return {Object}          Query object.
    */
   _fragmentToQueryObject: function(fragment) {
-    if (!fragment) return {};
+    return querystring.parse(this._fragmentToQueryString(fragment));
+  },
+
+  /**
+   * Given a fragment, return a query string.
+   * @param  {String} fragment Route fragment.
+   * @return {String}          Query string.
+   */
+  _fragmentToQueryString: function(fragment) {
+    if (!fragment) return '';
     var match = fragment.match(this.queryMatcher);
-    if (match.length < 3) return;
-    var qs = match[2] || '';
-    return querystring.parse(qs);
+    return match[2] || '';
   }
 });
 

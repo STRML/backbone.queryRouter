@@ -1,9 +1,18 @@
-describe "Test Router creation", ->
+describe "Test model change events & query modulation", ->
 
   if !Backbone.History.started
     Backbone.history.start();
   initialRoute = 'queryTest?foo=bar&bar=foo&nested[prop]=value&nested[prop2]=value2&nested2[prop3]=value3'
   changedRoute = 'queryTest?foo=bar&bar=baz&nested[prop]=value&nested[prop5]=value4&nested2[prop3]=value5'
+  changedProps = {
+    foo: 'bar'
+    bar: 'baz'
+    nested:
+      prop: 'value'
+      prop5: 'value4'
+    nested2:
+      prop3: 'value5'
+  }
 
   describe "Test firing of declarative routes", ->
 
@@ -18,7 +27,7 @@ describe "Test Router creation", ->
 
     afterEach ->
       router = new TestRouter()
-      Backbone.history.navigate(changedRoute, {trigger: true})
+      Backbone.history.query.set(changedProps)
       expect(queryCb.calls.count()).toEqual(1)
 
     it "Accepts simple declarative syntax", ->
@@ -62,5 +71,3 @@ describe "Test Router creation", ->
         'nested2.prop3': 'testRoute'
       }
 
-  # TODO test that route:name-style events are properly being thrown from declarative
-  # and imperative syntax
