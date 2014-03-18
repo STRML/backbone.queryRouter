@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>README.md</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="doc-style.css" />
+  <script src="doc-filelist.js"></script>
+  <script>
+    var relativeDir = "", thisFile = "README.md", defaultSidebar = true;
+  </script>
+  <script src="doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h1">
+        <a href="#backbone.queryrouter">Backbone.queryRouter</a>
+      </div>
+      <div class="heading h2">
+        <a href="#download">Download</a>
+      </div>
+      <div class="heading h2">
+        <a href="#description">Description</a>
+      </div>
+      <div class="heading h2">
+        <a href="#usage">Usage</a>
+      </div>
+      <div class="heading h2">
+        <a href="#documentation">Documentation</a>
+      </div>
+      <div class="heading h2">
+        <a href="#helper%20functions">Helper Functions</a>
+      </div>
+      <div class="heading h3">
+        <a href="#backbone.history.navigatebase">Backbone.history.navigateBase</a>
+      </div>
+      <div class="heading h3">
+        <a href="#backbone.history.query.(set%7Cunset%7Cclear)">Backbone.history.query.(set|unset|clear)</a>
+      </div>
+      <div class="heading h3">
+        <a href="#backbone.history.resetquery">Backbone.history.resetQuery</a>
+      </div>
+      <div class="heading h2">
+        <a href="#gotchas">Gotchas</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="docs markdown">
+<div class="pilwrap" id="backbone.queryrouter">
+  <h1>
+    <a href="#backbone.queryrouter" name="backbone.queryrouter" class="pilcrow">&#182;</a>
+    Backbone.queryRouter
+  </h1>
+</div>
+
+
+<p>Execute multiple routes per URL change using querystring properties.</p>
+
+
+<div class="pilwrap" id="download">
+  <h2>
+    <a href="#download" name="download" class="pilcrow">&#182;</a>
+    Download
+  </h2>
+</div>
+
+
+<p>For browsers:</p>
+
+<p><a href="dist/backbone.queryRouter.browser.js">Development Version</a> </p>
+
+<p><a href="dist/backbone.queryRouter.browser.min.js">Production Version</a></p>
+
+<p>For Node:</p>
+
+
+<div class="highlight"><pre><code>npm install backbone.queryRouter
+</code></pre></div>
+
+
+
+
+<div class="pilwrap" id="description">
+  <h2>
+    <a href="#description" name="description" class="pilcrow">&#182;</a>
+    Description
+  </h2>
+</div>
+
+
+<p>Modern web applications have many moving parts, and traditional webapp routing is far too restrictive
+to deal with real-world apps.</p>
+
+<p>A modern webapp may have many independent bits of serializable state that must be correctly transmitted
+when a URL is sent to another user. For example, a music app may want to send the current song, position within
+the song, and location within a browsing window. A search app may want to transmit the current query,
+selected results, expansion of those results, and user preferences.</p>
+
+<p>It is not always possible to store complex state in localStorage or cookies, if you want to transmit that
+complex state to other users via a URL. It can very quickly become unwieldy to create massive 'multi-routes',
+where sections of the URL delegate to subrouters. Every time a new widget with state is added, a new 
+section must be added to the route, and all links updated. <code>There has to be a better way!</code></p>
+
+<p>Querystrings are a perfect solution to this problem, and with HTML5 pushState, they can easily be used
+on the client and the server.</p>
+
+
+<div class="pilwrap" id="usage">
+  <h2>
+    <a href="#usage" name="usage" class="pilcrow">&#182;</a>
+    Usage
+  </h2>
+</div>
+
+
+<p>To create a router supporting query changes, use the following format:</p>
+
+
+<div class="highlight"><pre><code><span class="kd">var</span> <span class="nx">QueryAwareRouter</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Router</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+
+  <span class="c1">// Normal routes definition - this is unchanged.</span>
+  <span class="nx">routes</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s1">&#39;books/:bookID&#39;</span><span class="o">:</span> <span class="s1">&#39;viewBook&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;albums/:songNumber&#39;</span><span class="o">:</span> <span class="s1">&#39;viewSong&#39;</span>
+  <span class="p">},</span>
+
+  <span class="c1">// QueryRoutes are defined here. They are defined similarly to normal routes, in the format:</span>
+  <span class="c1">// {String} keys : {String} handlerName</span>
+  <span class="nx">queryRoutes</span><span class="o">:</span> <span class="p">{</span>
+    <span class="c1">// Here you can specify which keys you want to listen to.</span>
+    <span class="c1">// The attached handler will be fired each time any of the keys are added, removed, or changed.</span>
+    <span class="s1">&#39;volume&#39;</span><span class="o">:</span> <span class="s1">&#39;setVolume&#39;</span><span class="p">,</span>
+    <span class="c1">// To listen to multiple keys, separate them with commas. Whitespace is ignored.</span>
+    <span class="s1">&#39;playState, songID&#39;</span> <span class="o">:</span> <span class="s1">&#39;playSong&#39;</span>
+  <span class="p">},</span>
+
+  <span class="c1">// Each queryHandler is called with two parameters:</span>
+  <span class="c1">// @param {Array} changedKeys Array of changed keys that caused this handler to fire.</span>
+  <span class="c1">// @param {Object} queryObj   Subset of current query containing the keys in `changedKeys`.</span>
+  <span class="c1">//                            To get the full query, use `Backbone.history.query.toJSON()`</span>
+  <span class="nx">setVolume</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">changedKeys</span><span class="p">,</span> <span class="nx">queryObj</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// e.g. is the query is changed to &#39;?songID=foo&amp;volume=100&#39;, `changedKeys = [&#39;volume&#39;]` and</span>
+    <span class="c1">// `queryObj = {volume: &#39;100&#39;}`</span>
+  <span class="p">},</span>
+
+  <span class="nx">playSong</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">changedKeys</span><span class="p">,</span> <span class="nx">queryObj</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// e.g. if the query is changed to &#39;?songID=foo&amp;volume=100&#39;, `changedKeys = [&#39;songID&#39;]` and</span>
+    <span class="c1">// `queryObj = {songID: &#39;foo&#39;}`</span>
+  <span class="p">},</span>
+
+  <span class="c1">// ... more handlers ...</span>
+<span class="p">});</span>
+</code></pre></div>
+
+
+
+
+<div class="pilwrap" id="documentation">
+  <h2>
+    <a href="#documentation" name="documentation" class="pilcrow">&#182;</a>
+    Documentation
+  </h2>
+</div>
+
+
+<p>Generated documentation is <a href="raw/master/doc/src/backbone.queryRouter.js.html">available here</a>.</p>
+
+
+<div class="pilwrap" id="helper%20functions">
+  <h2>
+    <a href="#helper%20functions" name="helper%20functions" class="pilcrow">&#182;</a>
+    Helper Functions
+  </h2>
+</div>
+
+
+<p>Backbone.queryRouter comes with a few helper functions that help you modify the current URL.</p>
+
+
+<div class="pilwrap" id="backbone.history.navigatebase">
+  <h3>
+    <a href="#backbone.history.navigatebase" name="backbone.history.navigatebase" class="pilcrow">&#182;</a>
+    Backbone.history.navigateBase
+  </h3>
+</div>
+
+
+<p>Usage: <code>Backbone.history.navigateBase('/newRoute', {trigger: true});</code></p>
+
+<p>Useful when you want to change the base route and fire a route handler, but you don't want
+to change the current query. No query handlers will be fired and the query in the URL bar
+will remain unchanged.</p>
+
+
+<div class="pilwrap" id="backbone.history.query.(set%7Cunset%7Cclear)">
+  <h3>
+    <a href="#backbone.history.query.(set%7Cunset%7Cclear)" name="backbone.history.query.(set%7Cunset%7Cclear)" class="pilcrow">&#182;</a>
+    Backbone.history.query.(set|unset|clear)
+  </h3>
+</div>
+
+
+<p>The current query is attached to Backbone.history as a simple Backbone.Model. It supports
+all of the usual Backbone.Model methods and events. Changing attributes on the query
+will automatically fire the associated query handlers, much like calling 
+<code>Backbone.history.navigate</code> with <code>{trigger: true}</code>.</p>
+
+
+<div class="pilwrap" id="backbone.history.resetquery">
+  <h3>
+    <a href="#backbone.history.resetquery" name="backbone.history.resetquery" class="pilcrow">&#182;</a>
+    Backbone.history.resetQuery
+  </h3>
+</div>
+
+
+<p>Usage: `Backbone.history.resetQuery({key: 'value', nested: {key2: 'value'}})</p>
+
+<p>Resets the current query value to an entirely new value. Optionally accepts a query string -
+make sure it begins with a <code>?</code> so it can be parsed.</p>
+
+<p>This method is similar to <code>Backbone.Collection.reset</code>; it fires the appropriate <code>set</code> and
+<code>unset</code> methods, including the associated change events (for change events on nested attributes,
+see 'Gotchas' below). Only a single <code>change</code> event will be thrown.</p>
+
+
+<div class="pilwrap" id="gotchas">
+  <h2>
+    <a href="#gotchas" name="gotchas" class="pilcrow">&#182;</a>
+    Gotchas
+  </h2>
+</div>
+
+
+<p>While Backbone.queryRouter supports binding to nested attributes, the embedded query model
+does not support firing change events on nested attributes. If you require this, simply
+include <a href="https://github.com/afeld/backbone-nested">Backbone.NestedModel</a> before this
+script and the proper events will automatically be thrown.</p></div>
+  </div>
+</body>
+</html>
