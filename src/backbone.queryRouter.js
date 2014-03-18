@@ -67,7 +67,7 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
     _.each(this.queryHandlers, function(handler) {
       var intersections = _.intersection(diffs, handler.bindings);
       if (intersections.length) {
-        handler.callback(fragment, _.pick(query, intersections));
+        handler.callback(fragment, intersections, _.pick(query, intersections));
       }
     });
   },
@@ -312,12 +312,13 @@ var QueryRouter = Backbone.Router.extend(/** @lends QueryRouter# */{
       name = '';
     }
     if (!callback) callback = this[name];
+    if (!callback) throw new Error("QueryHandler not found: " + this[name]);
     var router = this;
-    Backbone.history.queryHandler(bindings, function(fragment, args) {
-      router.execute(callback, [args]);
-      router.trigger.apply(router, ['route:' + name].concat(args));
-      router.trigger('route', name, args);
-      Backbone.history.trigger('route', router, name, args);
+    Backbone.history.queryHandler(bindings, function(fragment, queryKeys, queryObj) {
+      router.execute(callback, [queryKeys, queryObj]);
+      router.trigger.apply(router, ['route:' + name].concat(queryKeys));
+      router.trigger('route', name, queryKeys, queryObj);
+      Backbone.history.trigger('route', router, name, queryKeys, queryObj);
     });
     return this;
   },

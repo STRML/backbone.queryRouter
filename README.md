@@ -40,7 +40,45 @@ on the client and the server.
 Usage
 -----
 
-TODO
+To create a router supporting query changes, use the following format:
+
+```javascript
+var QueryAwareRouter = Backbone.Router.extend({
+
+  // Normal routes definition - this is unchanged.
+  routes: {
+    'books/:bookID': 'viewBook',
+    'albums/:songNumber': 'viewSong'
+  },
+
+  // QueryRoutes are defined here. They are defined similarly to normal routes, in the format:
+  // {String} keys : {String} handlerName
+  queryRoutes: {
+    // Here you can specify which keys you want to listen to.
+    // The attached handler will be fired each time any of the keys are added, removed, or changed.
+    'volume': 'setVolume',
+    // To listen to multiple keys, separate them with commas. Whitespace is ignored.
+    'playState, songID' : 'playSong'
+  },
+
+  // Each queryHandler is called with two parameters:
+  // @param {Array} changedKeys Array of changed keys that caused this handler to fire.
+  // @param {Object} queryObj   Subset of current query containing the keys in `changedKeys`.
+  //                            To get the full query, use `Backbone.history.query.toJSON()`
+  setVolume: function(changedKeys, queryObj) {
+    // e.g. is the query is changed to '?songID=foo&volume=100', `changedKeys = ['volume']` and
+    // `queryObj = {volume: '100'}`
+  },
+
+  playSong: function(changedKeys, queryObj) {
+    // e.g. if the query is changed to '?songID=foo&volume=100', `changedKeys = ['songID']` and
+    // `queryObj = {songID: 'foo'}`
+  },
+  
+  // ... more handlers ...
+});
+
+```
 
 Documentation
 -------------
@@ -52,7 +90,31 @@ Helper Functions
 
 Backbone.queryRouter comes with a few helper functions that help you modify the current URL.
 
-TODO describe `changeBaseRoute`
+### Backbone.history.navigateBase
+
+Usage: `Backbone.history.navigateBase('/newRoute', {trigger: true});`
+
+Useful when you want to change the base route and fire a route handler, but you don't want
+to change the current query. No query handlers will be fired and the query in the URL bar
+will remain unchanged.
+
+### Backbone.history.query.(set|unset|clear)
+
+The current query is attached to Backbone.history as a simple Backbone.Model. It supports
+all of the usual Backbone.Model methods and events. Changing attributes on the query
+will automatically fire the associated query handlers, much like calling 
+`Backbone.history.navigate` with `{trigger: true}`.
+
+### Backbone.history.resetQuery
+
+Usage: `Backbone.history.resetQuery({key: 'value', nested: {key2: 'value'}})
+
+Resets the current query value to an entirely new value. Optionally accepts a query string -
+make sure it begins with a `?` so it can be parsed.
+
+This method is similar to `Backbone.Collection.reset`; it fires the appropriate `set` and
+`unset` methods, including the associated change events (for change events on nested attributes,
+see 'Gotchas' below). Only a single `change` event will be thrown.
 
 Gotchas
 -------
