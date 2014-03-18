@@ -2,7 +2,7 @@ describe "Test model change events & query modulation", ->
 
   if !Backbone.History.started
     Backbone.history.start();
-  initialRoute = 'queryTest?foo=bar&bar=foo&nested[prop]=value&nested[prop2]=value2&nested2[prop3]=value3'
+  initialRoute = 'queryTest?foo=bar&bar=foo&nested[prop]=value&nested[prop2]=value2&nested2[prop3]=value3&missing=gone'
   changedRoute = 'queryTest?foo=bar&bar=baz&nested[prop]=value&nested[prop5]=value4&nested2[prop3]=value5'
   changedProps = {
     foo: 'bar'
@@ -27,7 +27,7 @@ describe "Test model change events & query modulation", ->
 
     afterEach ->
       router = new TestRouter()
-      Backbone.history.query.set(changedProps)
+      Backbone.history.resetQuery(changedProps)
       expect(queryCb.calls.count()).toEqual(1)
 
     it "Accepts simple declarative syntax", ->
@@ -69,5 +69,10 @@ describe "Test model change events & query modulation", ->
     it "Works on nested child (change)", ->
       TestRouter.prototype.queryRoutes = {
         'nested2.prop3': 'testRoute'
+      }
+
+    it "Works on removed attribute", ->
+      TestRouter.prototype.queryRoutes = {
+        'missing': 'testRoute'
       }
 

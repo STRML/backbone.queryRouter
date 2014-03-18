@@ -54,5 +54,10 @@ Backbone.queryRouter comes with a few helper functions that help you modify the 
 
 TODO describe `changeBaseRoute`
 
-TODO describe `add/remove/set/replaceQuery`
-FIXME use a backbone model for state?
+Gotchas
+-------
+
+While Backbone.queryRouter supports binding to nested attributes, the embedded query model
+does not support firing change events on nested attributes. If you require this, simply
+include [Backbone.NestedModel](https://github.com/afeld/backbone-nested) before this
+script and the proper events will automatically be thrown.
