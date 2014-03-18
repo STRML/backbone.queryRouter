@@ -716,40 +716,21 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
 
   /**
    * Add loadQuery hook.
-   * Add 'forceTrigger' option that will trigger a route regardless of whether 
-   * or not we're already at that route.
-   * Also trigger '[before, after]Navigate' event.
    *
-   * Backbone.History is the prototype name, Backbone.history is the actual object, 
-   * but Backbone.History stores the 'started' flag. Whatever.
    * @param {String} fragment History fragment.
    * @param {Object} options  Navigation options.
    */
   navigate: function(fragment, options) {
     if (!Backbone.History.started) return false;
-
     if (!options) options = {};
-
-    // Throw a navigate route so we can hook to this elsewhere in the app.
-    // This is usually the event you'll want to listen to.
-    this.trigger('beforeNavigate', fragment, options);
 
     // Fire querystring routes.
     if (options.trigger) {
       this.loadQuery(fragment, options);
     }
 
-    // Support 'forceTrigger' to trigger a route even if the url hasn't changed.
-    // Have to check History.started here if we call loadUrl directly.
-    if (options.forceTrigger && this.fragment === fragment) {
-      this.loadUrl(fragment);
-    } else {
-      // Call navigate on prototype since we just overrode it.
-      Backbone.History.prototype.navigate.call(this, fragment, options);
-    }
-
-    // Throw an 'afterNavigate' route for those who care.
-    this.trigger('afterNavigate', fragment, options);
+    // Call navigate on prototype since we just overrode it.
+    Backbone.History.prototype.navigate.call(this, fragment, options);
   },
 
   /**
