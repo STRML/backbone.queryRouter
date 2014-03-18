@@ -18,6 +18,10 @@ For Node:
 npm install backbone.queryrouter
 ```
 
+For eyeballs:
+
+[Readable Source](src/backbone.queryRouter.js)
+
 Description
 -----------
 
