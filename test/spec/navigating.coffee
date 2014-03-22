@@ -76,7 +76,6 @@ describe "Navigation API tests", ->
 
     it "Fires correct navigation on query reset (using helper)", ->
       Backbone.history.resetQuery({artist: 'Picasso'})
-      debug(Backbone.history.query.changedAttributes())
       expect(router.calls).toEqual(['author', 'artist'])
 
     it "Fires correct navigation on query reset (using helper and string)", ->

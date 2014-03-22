@@ -631,7 +631,7 @@ function decode(str) {
 
 },{}],3:[function(require,module,exports){
 'use strict';
-// Is there a better way to pick up window globals?
+// TODO prefix with decent description for people viewing docs
 var Backbone = (window && window.Backbone) || require('backbone');
 var _ = (window && window._) || require('underscore');
 var querystring = require('qs');
@@ -686,6 +686,7 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
     // Diff new and old queries.
     var diffs = this._getDiffs(previous, query);
     if (!diffs.length) return;
+    debugger;
 
     // Set embedded model to new query object, firing 'change' events.
     this.stopListening(this.query, 'change', this.onQueryModelChange);

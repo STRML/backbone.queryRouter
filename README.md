@@ -1,7 +1,9 @@
 Backbone.queryRouter
 ====================
 
-Execute multiple routes per URL change using querystring properties.
+Execute multiple routes per URL change using watches on querystring keys. Drop-in plugin for Backbone;
+existing routers may remain unchanged, but you gain querystring-based routing via the new 
+`queryRoutes` property.
 
 Download
 --------
