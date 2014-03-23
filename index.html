@@ -60,7 +60,9 @@
 </div>
 
 
-<p>Execute multiple routes per URL change using querystring properties.</p>
+<p>Execute multiple routes per URL change using watches on querystring keys. Drop-in plugin for Backbone;
+existing routers may remain unchanged, but you gain querystring-based routing via the new 
+<code>queryRoutes</code> property.</p>
 
 
 <div class="pilwrap" id="download">
@@ -80,10 +82,16 @@
 <p>For Node:</p>
 
 
-<div class="highlight"><pre><code>npm install backbone.queryRouter
+<div class="highlight"><pre><code>npm install backbone.queryrouter
 </code></pre></div>
 
 
+
+<p>For eyeballs:</p>
+
+<p><a href="src/backbone.queryRouter.js">Readable Source</a></p>
+
+<p><a href="http://strml.github.io/backbone.queryRouter/src/backbone.queryRouter.js.html">Docs</a></p>
 
 
 <div class="pilwrap" id="description">
@@ -130,11 +138,12 @@ on the client and the server.</p>
     <span class="s1">&#39;albums/:songNumber&#39;</span><span class="o">:</span> <span class="s1">&#39;viewSong&#39;</span>
   <span class="p">},</span>
 
-  <span class="c1">// QueryRoutes are defined here. They are defined similarly to normal routes, in the format:</span>
+  <span class="c1">// QueryRoutes are defined here. They are defined in the format:</span>
   <span class="c1">// {String} keys : {String} handlerName</span>
   <span class="nx">queryRoutes</span><span class="o">:</span> <span class="p">{</span>
     <span class="c1">// Here you can specify which keys you want to listen to.</span>
-    <span class="c1">// The attached handler will be fired each time any of the keys are added, removed, or changed.</span>
+    <span class="c1">// The attached handler will be fired each time any of the keys are </span>
+    <span class="c1">// added, removed, or changed.</span>
     <span class="s1">&#39;volume&#39;</span><span class="o">:</span> <span class="s1">&#39;setVolume&#39;</span><span class="p">,</span>
     <span class="c1">// To listen to multiple keys, separate them with commas. Whitespace is ignored.</span>
     <span class="s1">&#39;playState, songID&#39;</span> <span class="o">:</span> <span class="s1">&#39;playSong&#39;</span>
@@ -142,16 +151,17 @@ on the client and the server.</p>
 
   <span class="c1">// Each queryHandler is called with two parameters:</span>
   <span class="c1">// @param {Array} changedKeys Array of changed keys that caused this handler to fire.</span>
-  <span class="c1">// @param {Object} queryObj   Subset of current query containing the keys in `changedKeys`.</span>
-  <span class="c1">//                            To get the full query, use `Backbone.history.query.toJSON()`</span>
+  <span class="c1">// @param {Object} queryObj   Subset of current query containing the keys </span>
+  <span class="c1">//                            in `changedKeys`. To get the full query, </span>
+  <span class="c1">//                            use `Backbone.history.query.toJSON()`</span>
   <span class="nx">setVolume</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">changedKeys</span><span class="p">,</span> <span class="nx">queryObj</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// e.g. is the query is changed to &#39;?songID=foo&amp;volume=100&#39;, `changedKeys = [&#39;volume&#39;]` and</span>
-    <span class="c1">// `queryObj = {volume: &#39;100&#39;}`</span>
+    <span class="c1">// e.g. if the query is changed to &#39;?songID=foo&amp;volume=100&#39;, </span>
+    <span class="c1">// `changedKeys = [&#39;volume&#39;]` and `queryObj = {volume: &#39;100&#39;}`</span>
   <span class="p">},</span>
 
   <span class="nx">playSong</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">changedKeys</span><span class="p">,</span> <span class="nx">queryObj</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// e.g. if the query is changed to &#39;?songID=foo&amp;volume=100&#39;, `changedKeys = [&#39;songID&#39;]` and</span>
-    <span class="c1">// `queryObj = {songID: &#39;foo&#39;}`</span>
+    <span class="c1">// e.g. if the query is changed to &#39;?songID=foo&amp;volume=100&#39;, </span>
+    <span class="c1">// `changedKeys = [&#39;songID&#39;]` and `queryObj = {songID: &#39;foo&#39;}`</span>
   <span class="p">},</span>
 
   <span class="c1">// ... more handlers ...</span>
@@ -169,7 +179,7 @@ on the client and the server.</p>
 </div>
 
 
-<p>Generated documentation is <a href="raw/master/doc/src/backbone.queryRouter.js.html">available here</a>.</p>
+<p>Generated documentation is <a href="http://strml.github.io/backbone.queryRouter/src/backbone.queryRouter.js.html">available here</a>.</p>
 
 
 <div class="pilwrap" id="helper%20functions">
@@ -220,7 +230,7 @@ will automatically fire the associated query handlers, much like calling
 </div>
 
 
-<p>Usage: `Backbone.history.resetQuery({key: 'value', nested: {key2: 'value'}})</p>
+<p>Usage: <code>Backbone.history.resetQuery({key: 'value', nested: {key2: 'value'}})</code></p>
 
 <p>Resets the current query value to an entirely new value. Optionally accepts a query string -
 make sure it begins with a <code>?</code> so it can be parsed.</p>
