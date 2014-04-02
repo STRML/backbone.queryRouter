@@ -92,11 +92,10 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
 
   /**
    * Parse a fragment into a query object and call handlers matching.
-   * @param {String} fragment Route fragment.
-   * @param {Object} options Navigation options.
+   * @param {String} [fragment] Route fragment.
    */
-  loadQuery: function(fragment, options) {
-    var query = this._fragmentToQueryObject(fragment);
+  loadQuery: function(fragment) {
+    var query = this._fragmentToQueryObject(fragment || this.fragment);
     var previous = this.previousQuery;
 
     // Save previous query. We intentionally do not use `this.query.previousAttributes()`, as
@@ -155,13 +154,15 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
     // Save base fragment for comparison in loadUrl.
     this._previousBaseFragment = this._stripQuery(this.fragment);
 
-    // Fire querystring routes.
+    // Call navigate on prototype.
+    var ret = Backbone.History.prototype.navigate.call(this, fragment, options);
+
+    // Fire querystring routes after normal routes.
     if (options.trigger) {
       this.loadQuery(fragment, options);
     }
 
-    // Call navigate on prototype since we just overrode it.
-    return Backbone.History.prototype.navigate.call(this, fragment, options);
+    return ret;
   },
 
   /**

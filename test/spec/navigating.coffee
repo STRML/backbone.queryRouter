@@ -42,7 +42,7 @@ describe "Navigation API tests", ->
       # Create router & route to initial route.
       router = new TestRouter()
       Backbone.history.navigate(initialRoute, {trigger: true})
-      expect(router.calls).toEqual(['author', 'book'])
+      expect(router.calls).toEqual(['book', 'author'])
       router.resetCalls()
 
     it "Fires correct navigation on query change", ->

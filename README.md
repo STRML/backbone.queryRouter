@@ -59,12 +59,14 @@ To create a router supporting query changes, use the following format:
 var QueryAwareRouter = Backbone.Router.extend({
 
   // Normal routes definition - this is unchanged.
+  // Normal routes are fired before queryRoutes.
   routes: {
     'books/:bookID': 'viewBook',
     'albums/:songNumber': 'viewSong'
   },
 
-  // QueryRoutes are defined here. They are defined in the format:
+  // QueryRoutes are defined here. They are fired after normal routes.
+  // They are defined in the format:
   // {String} keys : {String} handlerName
   queryRoutes: {
     // Here you can specify which keys you want to listen to.
