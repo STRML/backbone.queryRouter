@@ -25,7 +25,7 @@ module.exports = function(grunt) {
           alias: 'qs:querystring' // Use node-querystring (nested support) instead of querystring
         },
         src: ['src/*.js'],
-        dest: 'dist/backbone.queryRouters.nested.browser.js'
+        dest: 'dist/backbone.queryRouter.nested.browser.js'
       }
     },
     uglify: {
@@ -42,7 +42,7 @@ module.exports = function(grunt) {
           sourceMap: false
         },
         expand: true,
-        cwd: 'test/spec',
+        cwd: 'test',
         src: ['**/*.coffee'],
         dest: 'test',
         rename: function(dest, src){
@@ -67,9 +67,9 @@ module.exports = function(grunt) {
         }
       },
       testNested: {
-        src: 'dist/backbone.queryRouter.browser.js',
+        src: 'dist/backbone.queryRouter.nested.browser.js',
         options: {
-          specs: ['test/spec/build/*.js', 'test/spec/build/nested/*.js']
+          specs: ['test/spec/build/*.js', 'test/spec/nested/build/*.js']
         }
       }
     },
