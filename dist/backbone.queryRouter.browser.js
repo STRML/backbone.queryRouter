@@ -727,7 +727,13 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
    * @param {String} [fragment] Route fragment.
    */
   loadQuery: function(fragment) {
-    var query = this._fragmentToQueryObject(fragment || this.fragment);
+    if (!fragment) fragment = this.fragment;
+    
+    // Ensure the query model is up to date with the fragment. This is potentially redundant
+    // but must be in place in case `loadQuery` is called directly.
+    this._syncQueryModelFromFragment(fragment);
+
+    var query = this.query.toJSON();
     var previous = this.previousQuery;
 
     // Save previous query. We intentionally do not use `this.query.previousAttributes()`, as
@@ -737,11 +743,6 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
     // Diff new and old queries.
     var diffs = this._getDiffs(previous, query);
     if (!diffs.length) return;
-
-    // Set embedded model to new query object, firing 'change' events.
-    this.stopListening(this.query, 'change', this.onQueryModelChange);
-    this.resetQuery(query);
-    this.listenTo(this.query, 'change', this.onQueryModelChange);
 
     // Call each function that subscribes to these items.
     // This is intentional, rather than fire events on each changed item;
@@ -788,6 +789,9 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
 
     // Call navigate on prototype.
     var ret = Backbone.History.prototype.navigate.call(this, fragment, options);
+
+    // Synchronize query model with fragment.
+    this._syncQueryModelFromFragment(this.fragment, {silent: !(options && options.trigger)});
 
     // Fire querystring routes after normal routes.
     if (options.trigger) {
@@ -945,6 +949,22 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
     if (!fragment) return '';
     var match = fragment.match(this.queryMatcher);
     return match[2] || '';
+  },
+
+  /**
+   * Synchronize the internal query model with the fragment.
+   * @param {String} fragment Route fragment.
+   * @param {Object} options  Options.
+   * @param {Boolean} [options.trigger] If true will not fire change events.
+   */
+  _syncQueryModelFromFragment: function(fragment, options) {
+    // Set internal query object.
+    var query = this._fragmentToQueryObject(this.fragment);
+
+    // Set embedded model to new query object, firing 'change' events when necessary.
+    this.stopListening(this.query, 'change', this.onQueryModelChange);
+    this.resetQuery(query, options);
+    this.listenTo(this.query, 'change', this.onQueryModelChange);
   },
 
   /**

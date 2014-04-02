@@ -174,7 +174,7 @@ on the client and the server.</p>
   <span class="nx">setVolume</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">queryObj</span><span class="p">,</span> <span class="nx">changedKeys</span><span class="p">)</span> <span class="p">{</span>
     <span class="c1">// e.g. if the query is changed to &#39;?songID=foo&amp;volume=100&#39;, </span>
     <span class="c1">// `changedKeys = [&#39;volume&#39;]` and `queryObj = {songID: &#39;foo&#39;, volume: &#39;100&#39;}`</span>
-    <span class="c1">// If you need to get just the changed key/value pairs, use _.pick(queryObj, changedKeys)</span>
+    <span class="c1">// If you need to get just the changed pairs, use _.pick(queryObj, changedKeys)</span>
   <span class="p">},</span>
 
   <span class="nx">playSong</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">queryObj</span><span class="p">,</span> <span class="nx">changedKeys</span><span class="p">)</span> <span class="p">{</span>
