@@ -35,9 +35,9 @@ Download
 
 For browsers:
 
-[Development Version](dist/backbone.queryRouter.browser.js) 
+[Development Version](dist/backbone.queryRouter.browser.js) (~20KB)
 
-[Production Version](dist/backbone.queryRouter.browser.min.js)
+[Production Version](dist/backbone.queryRouter.browser.min.js) (~5.5KB, ~2.5KB gzipped)
 
 For Node:
 
@@ -50,6 +50,12 @@ For eyeballs:
 [Readable Source](src/backbone.queryRouter.js)
 
 [Docs](http://strml.github.io/backbone.queryRouter/src/backbone.queryRouter.js.html)
+
+Nested model/querystring support:
+
+[Development Version](dist/backbone.queryRouter.nested.browser.js) (~32KB)
+
+[Production Version](dist/backbone.queryRouter.nested.browser.min.js) (~10KB, ~4.0KB gzipped)
 
 Description
 -----------

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>backbone.queryRouter.nested.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../doc-style.css" />
+  <script src="../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../", thisFile = "src/backbone.queryRouter.nested.js", defaultSidebar = true;
+  </script>
+  <script src="../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h2">
+        <a href="#backbone.queryrouter.nested.js">Backbone.queryRouter.nested.js</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="backbone.queryrouter.nested.js">
+  <h2>
+    <a href="#backbone.queryrouter.nested.js" name="backbone.queryrouter.nested.js" class="pilcrow">&#182;</a>
+    Backbone.queryRouter.nested.js
+  </h2>
+</div>
+
+
+<p>Overrides for handling nested querystrings &amp; nested models.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-3" id="line-3">3</a>  <span class="s1">&#39;use strict&#39;</span><span class="p">;</span>
+<a class="line-num" href="#line-4" id="line-4">4</a>  
+<a class="line-num" href="#line-5" id="line-5">5</a>  </pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-2" id="section-2">&#182;</a>
+</div>
+<p>CommonJS includes. This is a browserify module and will run both inside Node and in the browser.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-6" id="line-6">6</a>  
+<a class="line-num" href="#line-7" id="line-7">7</a>  <span class="kd">var</span> <span class="nx">Backbone</span> <span class="o">=</span> <span class="p">(</span><span class="nb">window</span> <span class="o">&amp;&amp;</span> <span class="nb">window</span><span class="p">.</span><span class="nx">Backbone</span><span class="p">)</span> <span class="o">||</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;backbone&#39;</span><span class="p">);</span>
+<a class="line-num" href="#line-8" id="line-8">8</a>  <span class="kd">var</span> <span class="nx">_</span> <span class="o">=</span> <span class="p">(</span><span class="nb">window</span> <span class="o">&amp;&amp;</span> <span class="nb">window</span><span class="p">.</span><span class="nx">_</span><span class="p">)</span> <span class="o">||</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;underscore&#39;</span><span class="p">);</span>
+<a class="line-num" href="#line-9" id="line-9">9</a>  <span class="kd">var</span> <span class="nx">diff</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;deep-diff&#39;</span><span class="p">);</span>
+<a class="line-num" href="#line-10" id="line-10">10</a>  
+<a class="line-num" href="#line-11" id="line-11">11</a>  
+<a class="line-num" href="#line-12" id="line-12">12</a>  </pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><p>Backbone.History nested support.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Type</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">Backbone.History
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-14" id="line-14">14</a>  
+<a class="line-num" href="#line-15" id="line-15">15</a>  
+<a class="line-num" href="#line-16" id="line-16">16</a>  
+<a class="line-num" href="#line-17" id="line-17">17</a>  </pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-4" id="section-4">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><p>Model emcompassing current query state. You can read and set properties
+on this Model and <code>Backbone.history.navigate()</code> will automatically be called.
+If Backbone.NestedModel is loaded, it will be used to support nested change events.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Type</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">Backbone.Model
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-21" id="line-21">21</a>  
+<a class="line-num" href="#line-22" id="line-22">22</a>  <span class="kd">var</span> <span class="nx">_toString</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">query</span><span class="p">.</span><span class="nx">toString</span><span class="p">;</span> <span class="c1">// must be restored later</span>
+<a class="line-num" href="#line-23" id="line-23">23</a>  
+<a class="line-num" href="#line-24" id="line-24">24</a>  <span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">query</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">NestedModel</span> <span class="o">?</span> 
+<a class="line-num" href="#line-25" id="line-25">25</a>    <span class="k">new</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">NestedModel</span><span class="p">()</span> <span class="o">:</span> <span class="k">new</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">();</span>
+<a class="line-num" href="#line-26" id="line-26">26</a>  
+<a class="line-num" href="#line-27" id="line-27">27</a>  <span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">query</span><span class="p">.</span><span class="nx">toString</span> <span class="o">=</span> <span class="nx">_toString</span><span class="p">;</span>
+<a class="line-num" href="#line-28" id="line-28">28</a>  
+<a class="line-num" href="#line-29" id="line-29">29</a>  
+<a class="line-num" href="#line-30" id="line-30">30</a>  
+<a class="line-num" href="#line-31" id="line-31">31</a>  </pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-5" id="section-5">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><p>Given two objects, compute their differences and list them.
+When diffing deep objects, return one string for the object and one for each child.
+This allows functions to bind to deep properties or its parent.
+E.g. a change to a.b.c returns ['a', 'a.b', 'a.b.c']</p>
+  </div>
+  <div class="body"><p>This uses DeepDiff (flitbit/diff), which can detect changes deep within objects.
+We don't use objects in querystrings quite yet, but we do arrays. And that might change.</p>
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span>{Object} lhs Left hand object.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span>{Object} rhs Right hand (new) object.</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">Array</span>
+      <span>Array of string differences.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-46" id="line-46">46</a>  
+<a class="line-num" href="#line-47" id="line-47">47</a>  <span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">_getDiffs</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">lhs</span><span class="p">,</span> <span class="nx">rhs</span><span class="p">)</span> <span class="p">{</span>
+<a class="line-num" href="#line-48" id="line-48">48</a>    <span class="kd">var</span> <span class="nx">diffs</span> <span class="o">=</span> <span class="nx">diff</span><span class="p">(</span><span class="nx">lhs</span><span class="p">,</span> <span class="nx">rhs</span><span class="p">);</span>
+<a class="line-num" href="#line-49" id="line-49">49</a>    <span class="kd">var</span> <span class="nx">diffKeys</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">reduce</span><span class="p">(</span><span class="nx">diffs</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">result</span><span class="p">,</span> <span class="nx">diff</span><span class="p">)</span> <span class="p">{</span>
+<a class="line-num" href="#line-50" id="line-50">50</a>      <span class="kd">var</span> <span class="nx">paths</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">diff</span><span class="p">.</span><span class="nx">path</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
+<a class="line-num" href="#line-51" id="line-51">51</a>        <span class="k">return</span> <span class="nx">_</span><span class="p">.</span><span class="nx">first</span><span class="p">(</span><span class="nx">diff</span><span class="p">.</span><span class="nx">path</span><span class="p">,</span> <span class="nx">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">).</span><span class="nx">join</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">);</span>
+<a class="line-num" href="#line-52" id="line-52">52</a>      <span class="p">});</span>
+<a class="line-num" href="#line-53" id="line-53">53</a>      <span class="k">return</span> <span class="nx">result</span><span class="p">.</span><span class="nx">concat</span><span class="p">(</span><span class="nx">paths</span><span class="p">);</span>
+<a class="line-num" href="#line-54" id="line-54">54</a>    <span class="p">},</span> <span class="p">[]);</span>
+<a class="line-num" href="#line-55" id="line-55">55</a>    <span class="k">return</span> <span class="nx">_</span><span class="p">.</span><span class="nx">uniq</span><span class="p">(</span><span class="nx">diffKeys</span><span class="p">);</span>
+<a class="line-num" href="#line-56" id="line-56">56</a>  <span class="p">};</span>
+<a class="line-num" href="#line-57" id="line-57">57</a>  </pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

@@ -52,12 +52,39 @@
         <a href="#backbone.history.resetquery(object%7Cstring%20query)">Backbone.history.resetQuery(Object|String query)</a>
       </div>
       <div class="heading h2">
-        <a href="#gotchas">Gotchas</a>
+        <a href="#nested%20attributes">Nested Attributes</a>
+      </div>
+      <div class="heading h2">
+        <a href="#querystring%20formatting">Querystring Formatting</a>
       </div>
     </div>
   </div>
   <div id="sidebar-toggle"></div>
-  <div id="container"><div class="docs markdown">
+  <div id="container"><div class="docs markdown"><!-- START doctoc generated TOC please keep comment here to allow auto update -->
+
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+<p><strong>Table of Contents</strong>  <em>generated with <a href="http://doctoc.herokuapp.com/">DocToc</a></em></p>
+
+<ul>
+<li><a href="#backbonequeryrouter">Backbone.queryRouter</a>
+<ul><li><a href="#requirements">Requirements</a></li>
+<li><a href="#download">Download</a></li>
+<li><a href="#description">Description</a></li>
+<li><a href="#usage">Usage</a>
+<ul><li><a href="#backbonehistorynavigatebasestring-route-object-options">Backbone.history.navigateBase(String route, Object options)</a></li>
+<li><a href="#backbonehistorygetbaseroute-->-string">Backbone.history.getBaseRoute() -> String</a></li>
+<li><a href="#backbonehistoryquery-->-backbonemodel">Backbone.history.query -> Backbone.Model</a></li>
+<li><a href="#backbonehistoryresetqueryobject|string-query">Backbone.history.resetQuery(Object|String query)</a></li></ul></li>
+<li><a href="#documentation">Documentation</a></li>
+<li><a href="#helper-functions">Helper Functions</a></li>
+<li><a href="#nested-attributes">Nested Attributes</a></li>
+<li><a href="#querystring-formatting">Querystring Formatting</a></li></ul></li>
+</ul>
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+
 <div class="pilwrap" id="backbone.queryrouter">
   <h1>
     <a href="#backbone.queryrouter" name="backbone.queryrouter" class="pilcrow">&#182;</a>
@@ -165,7 +192,9 @@ on the client and the server.</p>
     <span class="c1">// added, removed, or changed.</span>
     <span class="s1">&#39;volume&#39;</span><span class="o">:</span> <span class="s1">&#39;setVolume&#39;</span><span class="p">,</span>
     <span class="c1">// To listen to multiple keys, separate them with commas. Whitespace is ignored.</span>
-    <span class="s1">&#39;playState, songID&#39;</span> <span class="o">:</span> <span class="s1">&#39;playSong&#39;</span>
+    <span class="s1">&#39;playState, songID&#39;</span> <span class="o">:</span> <span class="s1">&#39;playSong&#39;</span><span class="p">,</span>
+    <span class="c1">// To use nested properties, see the `Nested Attributes` section below.</span>
+    <span class="s1">&#39;object.nestedProperty&#39;</span><span class="o">:</span> <span class="s1">&#39;nestedHandler&#39;</span>
   <span class="p">},</span>
 
   <span class="c1">// Each queryHandler is called with two parameters:</span>
@@ -276,7 +305,8 @@ will automatically fire the associated query handlers, much like calling
 
 
 <div class="highlight"><pre><code><span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">resetQuery</span><span class="p">({</span><span class="nx">key</span><span class="o">:</span> <span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="nx">nested</span><span class="o">:</span> <span class="p">{</span><span class="nx">key2</span><span class="o">:</span> <span class="s1">&#39;value2&#39;</span><span class="p">}})</span>
-<span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">resetQuery</span><span class="p">(</span><span class="s2">&quot;?key=value&amp;nested[key2]=value2&quot;</span><span class="p">)</span>
+<span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">resetQuery</span><span class="p">(</span><span class="s2">&quot;?key=value&amp;key2=value2&quot;</span><span class="p">)</span> 
+<span class="c1">// see `Nested Attributes` below</span>
 <span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">resetQuery</span><span class="p">(</span><span class="s2">&quot;ignored/fragment?key=value&amp;nested[key2]=value2&quot;</span><span class="p">)</span>
 </code></pre></div>
 
@@ -288,23 +318,43 @@ route fragment. If you pass this method a querystring containing a <code>?</code
 you must include the leading <code>?</code> or the querystring will be misparsed.</p>
 
 <p>This method is similar to <code>Backbone.Collection.reset</code>; it fires the appropriate <code>set</code> and
-<code>unset</code> methods, including the associated change events (for change events on nested attributes,
-see 'Gotchas' below). Only a single <code>change</code> event will be thrown, so there is no need to 
+<code>unset</code> methods, including the associated change events. Only a single <code>change</code> event will be thrown, so there is no need to 
 debounce your handlers.</p>
 
 
-<div class="pilwrap" id="gotchas">
+<div class="pilwrap" id="nested%20attributes">
   <h2>
-    <a href="#gotchas" name="gotchas" class="pilcrow">&#182;</a>
-    Gotchas
+    <a href="#nested%20attributes" name="nested%20attributes" class="pilcrow">&#182;</a>
+    Nested Attributes
   </h2>
 </div>
 
 
-<p>While Backbone.queryRouter supports binding to nested attributes, the embedded query model
+<p>Nested attribute support is available in 
+<a href="dist/backbone.queryRouter.nested.browser.js">backbone.queryRouter.nested.browser.js</a> 
+(<a href="dist/backbone.queryRouter.nested.browser.min.js">Production Build</a>). 
+While this build supports binding to nested attributes, the embedded query model
 does not support firing change events on nested attributes. If you require this, simply
 include <a href="https://github.com/afeld/backbone-nested">Backbone.NestedModel</a> before this
-script and the proper events will automatically be thrown.</p></div>
+script and the proper events will automatically be thrown.</p>
+
+
+<div class="pilwrap" id="querystring%20formatting">
+  <h2>
+    <a href="#querystring%20formatting" name="querystring%20formatting" class="pilcrow">&#182;</a>
+    Querystring Formatting
+  </h2>
+</div>
+
+
+<p>The smaller, non-nested build of <code>backbone.queryRouter</code> uses a nodeJS-compatible querystring library that does
+not support nested attributes. For example, the query object <code>{key: ['val1', 'val2']}</code> would be translated
+to <code>key=val1&amp;key=val2</code> and vice-versa.</p>
+
+<p>In the nested build, querystring support is changed to 
+<a href="https://github.com/visionmedia/node-querystring">visionmedia/node-querystring</a>, which supports nested attributes.
+It also includes keys in arrays, so be sure that your server can parse them correctly. For example,
+<code>{key: ['val1', 'val2']}</code> would be translated to <code>key[0]=val1&amp;key[1]=val2</code>.</p></div>
   </div>
 </body>
 </html>
