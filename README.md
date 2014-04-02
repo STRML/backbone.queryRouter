@@ -108,12 +108,20 @@ Useful when you want to change the base route and fire a route handler, but you 
 to change the current query. No query handlers will be fired and the query in the URL bar
 will remain unchanged.
 
-### Backbone.history.query
+### Backbone.history.getBaseRoute() -> String
 
-* `Backbone.history.query.set(attributes, [options])`
-* `Backbone.history.query.unset(attributes, [options])`
-* `Backbone.history.query.clear()`
-* `Backbone.history.query.toString()`
+Returns current base route (fragment without querystring).
+
+### Backbone.history.query -> Backbone.Model
+
+Usage:
+
+```javascript
+Backbone.history.query.set(attributes, [options])
+Backbone.history.query.unset(attributes, [options])
+Backbone.history.query.clear()
+Backbone.history.query.toString()
+```
 
 The current query is attached to Backbone.history as a simple Backbone.Model. It supports
 all of the usual Backbone.Model methods and events. Changing attributes on the query
@@ -122,16 +130,25 @@ will automatically fire the associated query handlers, much like calling
 
 Call `Backbone.history.query.toString()` to get the current query string.
 
-### Backbone.history.resetQuery
+### Backbone.history.resetQuery(Object|String query)
 
-Usage: `Backbone.history.resetQuery({key: 'value', nested: {key2: 'value'}})`
+Usage: 
 
-Resets the current query value to an entirely new value. Optionally accepts a query string -
-make sure it begins with a `?` so it can be parsed.
+```javascript
+Backbone.history.resetQuery({key: 'value', nested: {key2: 'value2'}})
+Backbone.history.resetQuery("?key=value&nested[key2]=value2")
+Backbone.history.resetQuery("ignored/fragment?key=value&nested[key2]=value2")
+```
+
+Resets the current query value to an entirely new value. Optionally accepts a query string with or
+without a leading `?`, and will automatically extract the querystring if you pass it a full
+route fragment. If you pass this method a querystring containing a `?` in a key or value, 
+you must include the leading `?` or the querystring will be misparsed.
 
 This method is similar to `Backbone.Collection.reset`; it fires the appropriate `set` and
 `unset` methods, including the associated change events (for change events on nested attributes,
-see 'Gotchas' below). Only a single `change` event will be thrown.
+see 'Gotchas' below). Only a single `change` event will be thrown, so there is no need to 
+debounce your handlers.
 
 Gotchas
 -------
