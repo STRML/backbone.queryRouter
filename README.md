@@ -100,7 +100,7 @@ Helper Functions
 
 Backbone.queryRouter comes with a few helper functions that help you modify the current URL.
 
-### Backbone.history.navigateBase
+### Backbone.history.navigateBase(String route, Object options)
 
 Usage: `Backbone.history.navigateBase('/newRoute', {trigger: true});`
 
@@ -108,12 +108,19 @@ Useful when you want to change the base route and fire a route handler, but you 
 to change the current query. No query handlers will be fired and the query in the URL bar
 will remain unchanged.
 
-### Backbone.history.query.(set|unset|clear)
+### Backbone.history.query
+
+* `Backbone.history.query.set(attributes, [options])`
+* `Backbone.history.query.unset(attributes, [options])`
+* `Backbone.history.query.clear()`
+* `Backbone.history.query.toString()`
 
 The current query is attached to Backbone.history as a simple Backbone.Model. It supports
 all of the usual Backbone.Model methods and events. Changing attributes on the query
 will automatically fire the associated query handlers, much like calling 
-`Backbone.history.navigate` with `{trigger: true}`.
+`Backbone.history.navigate(route, {trigger:true})`.
+
+Call `Backbone.history.query.toString()` to get the current query string.
 
 ### Backbone.history.resetQuery
 
