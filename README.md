@@ -76,18 +76,17 @@ var QueryAwareRouter = Backbone.Router.extend({
   },
 
   // Each queryHandler is called with two parameters:
+  // @param {Object} queryObj   Current query object.
   // @param {Array} changedKeys Array of changed keys that caused this handler to fire.
-  // @param {Object} queryObj   Subset of current query containing the keys 
-  //                            in `changedKeys`. To get the full query, 
-  //                            use `Backbone.history.query.toJSON()`
-  setVolume: function(changedKeys, queryObj) {
+  setVolume: function(queryObj, changedKeys) {
     // e.g. if the query is changed to '?songID=foo&volume=100', 
-    // `changedKeys = ['volume']` and `queryObj = {volume: '100'}`
+    // `changedKeys = ['volume']` and `queryObj = {songID: 'foo', volume: '100'}`
+    // If you need to get just the changed key/value pairs, use _.pick(queryObj, changedKeys)
   },
 
-  playSong: function(changedKeys, queryObj) {
+  playSong: function(queryObj, changedKeys) {
     // e.g. if the query is changed to '?songID=foo&volume=100', 
-    // `changedKeys = ['songID']` and `queryObj = {songID: 'foo'}`
+    // `changedKeys = ['songID']` and `queryObj = {songID: 'foo', volume: '100'}`
   },
 
   // ... more handlers ...

@@ -31,9 +31,9 @@ describe "Test incoming parameters on route handlers", ->
   # Here we're testing that the correct parameters come back on a route handler.
   it "Properly passes changed attrs and current query object (single)", ->
     called = false
-    singleHook = (changedAttrs, queryObj) ->
+    singleHook = (queryObj, changedAttrs) ->
       expect(changedAttrs).toEqual(['bar'])
-      expect(queryObj).toEqual(_.pick(Backbone.history.query.toJSON(), 'bar'))
+      expect(queryObj).toEqual(Backbone.history.query.toJSON())
       called = true
 
     Backbone.history.navigate(changedRoute, {trigger: true})
@@ -41,10 +41,10 @@ describe "Test incoming parameters on route handlers", ->
 
   it "Properly passes changed attrs and current query object (multiple)", ->
     called = false
-    multipleHook = (changedAttrs, queryObj) ->
+    multipleHook = (queryObj, changedAttrs) ->
       props = ['bar', 'nested']
       expect(changedAttrs).toEqual(props)
-      expect(queryObj).toEqual(_.pick(Backbone.history.query.toJSON(), props))
+      expect(queryObj).toEqual(Backbone.history.query.toJSON())
       called = true
 
     Backbone.history.navigate(changedRoute, {trigger: true})
@@ -52,10 +52,10 @@ describe "Test incoming parameters on route handlers", ->
 
   it "Properly passes changed attrs and current query object (multipleNested)", ->
     called = false
-    multipleNestedHook = (changedAttrs, queryObj) ->
+    multipleNestedHook = (queryObj, changedAttrs) ->
       props = ['bar', 'nested', 'nested.prop5'] # NOT nested.missingProp (doesn't exist) or nested.prop (no change)
       expect(changedAttrs).toEqual(props)
-      expect(queryObj).toEqual(_.pick(Backbone.history.query.toJSON(), props))
+      expect(queryObj).toEqual(Backbone.history.query.toJSON())
       called = true
 
     Backbone.history.navigate(changedRoute, {trigger: true})
