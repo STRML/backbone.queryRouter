@@ -83,7 +83,7 @@ var QueryAwareRouter = Backbone.Router.extend({
   setVolume: function(queryObj, changedKeys) {
     // e.g. if the query is changed to '?songID=foo&volume=100', 
     // `changedKeys = ['volume']` and `queryObj = {songID: 'foo', volume: '100'}`
-    // If you need to get just the changed key/value pairs, use _.pick(queryObj, changedKeys)
+    // If you need to get just the changed pairs, use _.pick(queryObj, changedKeys)
   },
 
   playSong: function(queryObj, changedKeys) {
