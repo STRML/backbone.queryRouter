@@ -5,6 +5,11 @@ Execute multiple routes per URL change using watches on querystring keys. Drop-i
 existing routers may remain unchanged, but you gain querystring-based routing via the new 
 `queryRoutes` property.
 
+Requirements
+------------
+
+`Backbone >= 1.1.1`
+
 Download
 --------
 

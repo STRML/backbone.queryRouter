@@ -127,14 +127,19 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
   /**
    * Compare previous base fragment to current base fragment. If it is the same,
    * do not fire the url handler.
+   *
+   * This is intended so that you can use `navigate` to change a query without
+   * worrying about refiring route handlers.
+   * 
    * @param  {String} fragment History fragment.
-   * @return {Boolean} True if a route was matched.
+   * @return {Boolean} True if a route was matched or if it hasn't changed. This allows you
+   *   to still bind listeners that look for unmatched routes, e.g. backbone.routeNotFound.
    */
   loadUrl: function(fragment) {
     if (this._previousBaseFragment !== this._stripQuery(fragment)) {
       return Backbone.History.prototype.loadUrl.apply(this, arguments);
     }
-    return false;
+    return true;
   },
 
   /**
@@ -145,7 +150,7 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
    */
   navigate: function(fragment, options) {
     if (!Backbone.History.started) return false;
-    if (!options) options = {};
+    if (!options || options === true) options = {trigger: !!options};
 
     // Save base fragment for comparison in loadUrl.
     this._previousBaseFragment = this._stripQuery(this.fragment);
@@ -156,7 +161,7 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
     }
 
     // Call navigate on prototype since we just overrode it.
-    Backbone.History.prototype.navigate.call(this, fragment, options);
+    return Backbone.History.prototype.navigate.call(this, fragment, options);
   },
 
   /**
