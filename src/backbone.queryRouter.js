@@ -253,6 +253,16 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
   },
 
   /**
+   * When Backbone.history initializes, also load the current query.
+   * @return {Boolean}         Route matching status from Backbone.history.loadUrl.
+   */
+  start: function() {
+    var ret = Backbone.History.prototype.start.apply(this, arguments);
+    if (!this.options.silent) this.loadQuery();
+    return ret;
+  },
+
+  /**
    * Given two objects, compute their differences and list them.
    * When diffing deep objects, return one string for the object and one for each child.
    * This allows functions to bind to deep properties or its parent.
