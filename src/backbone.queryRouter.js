@@ -96,7 +96,7 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
    */
   loadQuery: function(fragment) {
     if (!fragment) fragment = this.fragment;
-    
+
     // Ensure the query model is up to date with the fragment. This is potentially redundant
     // but must be in place in case `loadQuery` is called directly.
     this._syncQueryModelFromFragment(fragment);
@@ -182,24 +182,15 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
   },
 
   /**
-   * When the query model changes, run all associated routes.
+   * When the query model changes, navigate.
    * @param  {Model}  model   Attached model.
-   * @param  {Object} options Change options.
+   * @param  {Object} options Change options (currently ignored).
    */
   onQueryModelChange: function(model, options) {
-    var fragment = this.fragment || '';
-    var oldQS = querystring.stringify(this.previousQuery);
-    var newQS = model.toString();
+    var baseRoute = this._stripQuery(this.fragment || '');
 
-    // If the old querystring exists, replace it with the new one, otherwise just append.
-    if (oldQS) {
-      fragment = fragment.replace(oldQS, newQS);
-    } else {
-      // No existing querystring, add it directly to the fragment.
-      if (fragment.slice(-1) !== '?') fragment += '?';
-      fragment += newQS;
-    }
-    this.navigate(fragment, {trigger: true});
+    // Write the new querystring.
+    this.navigate(baseRoute + '?' + this.query.toString(), {trigger: true});
   },
 
   /**
