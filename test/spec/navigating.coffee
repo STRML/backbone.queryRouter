@@ -1,14 +1,14 @@
 describe "Navigation API tests", ->
 
   if !Backbone.History.started
-    Backbone.history.start();
+    Backbone.history.start()
 
   describe "Usage of navigation helpers", ->
 
     TestRouter = Backbone.Router.extend({
-      routes: 
+      routes:
         'books/:title': 'viewBook'
-        'albums/:songNumber': 'viewSong'  
+        'albums/:songNumber': 'viewSong'
       queryRoutes:
         'artist': 'viewArtist'
         'author': 'viewAuthor'
@@ -16,7 +16,7 @@ describe "Navigation API tests", ->
       initialize: ->
         this.resetCalls()
       resetCalls: ->
-        this.calls = [];
+        this.calls = []
       # These are difficult to spy on since they are bound immediately
       viewBook: ->
         this.calls.push('book')
@@ -64,7 +64,7 @@ describe "Navigation API tests", ->
 
     it "Fires correct navigation on route change", ->
       Backbone.history.navigate('books/Snow%20Crash?author=Neal%20Stephenson', {trigger: true})
-      expect(router.calls).toEqual(['book'])    
+      expect(router.calls).toEqual(['book'])
 
     it "Fires correct navigation on route change (using helper)", ->
       Backbone.history.navigateBase('albums/1', {trigger: true})

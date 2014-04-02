@@ -12,19 +12,27 @@ module.exports = function(grunt) {
       test: ['test/**/build/*.js', '_SpecRunner.html']
     },
     browserify: {
+      options: {
+        external: ['backbone', 'underscore'],
+        debug: false
+      },
       dist: {
+        src: ['src/backbone.queryRouter.js'],
+        dest: 'dist/backbone.queryRouter.browser.js'
+      },
+      nestedDist: {
         options: {
-          external: ['backbone', 'underscore'],
-          debug: false
+          alias: 'qs:querystring' // Use node-querystring (nested support) instead of querystring
         },
         src: ['src/*.js'],
-        dest: 'dist/backbone.queryRouter.browser.js'
+        dest: 'dist/backbone.queryRouters.nested.browser.js'
       }
     },
     uglify: {
       dist: {
         files: {
-          'dist/backbone.queryRouter.browser.min.js': 'dist/backbone.queryRouter.browser.js'
+          'dist/backbone.queryRouter.browser.min.js': 'dist/backbone.queryRouter.browser.js',
+          'dist/backbone.queryRouter.nested.browser.min.js': 'dist/backbone.queryRouter.nested.browser.js'
         }
       }
     },
@@ -34,7 +42,7 @@ module.exports = function(grunt) {
           sourceMap: false
         },
         expand: true,
-        cwd: 'test',
+        cwd: 'test/spec',
         src: ['**/*.coffee'],
         dest: 'test',
         rename: function(dest, src){
@@ -44,16 +52,24 @@ module.exports = function(grunt) {
       }
     },
     jasmine: {
+      options: {
+        helpers: 'test/helpers/build/*.js',
+        vendor: [
+          'bower_components/jquery/dist/jquery.js',
+          'bower_components/underscore/underscore.js',
+          'bower_components/backbone/backbone.js'
+        ]
+      },
       test: {
         src: 'dist/backbone.queryRouter.browser.js',
         options: {
-          specs: 'test/spec/build/*.js',
-          helpers: 'test/helpers/build/*.js',
-          vendor: [
-            'bower_components/jquery/dist/jquery.js',
-            'bower_components/underscore/underscore.js',
-            'bower_components/backbone/backbone.js'
-          ]
+          specs: 'test/spec/build/*.js'
+        }
+      },
+      testNested: {
+        src: 'dist/backbone.queryRouter.browser.js',
+        options: {
+          specs: ['test/spec/build/*.js', 'test/spec/build/nested/*.js']
         }
       }
     },

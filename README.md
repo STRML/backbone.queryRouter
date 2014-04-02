@@ -1,3 +1,23 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
+
+- [Backbone.queryRouter](#backbonequeryrouter)
+	- [Requirements](#requirements)
+	- [Download](#download)
+	- [Description](#description)
+	- [Usage](#usage)
+		- [Backbone.history.navigateBase(String route, Object options)](#backbonehistorynavigatebasestring-route-object-options)
+		- [Backbone.history.getBaseRoute() -> String](#backbonehistorygetbaseroute-->-string)
+		- [Backbone.history.query -> Backbone.Model](#backbonehistoryquery-->-backbonemodel)
+		- [Backbone.history.resetQuery(Object|String query)](#backbonehistoryresetqueryobject|string-query)
+	- [Documentation](#documentation)
+	- [Helper Functions](#helper-functions)
+	- [Nested Attributes](#nested-attributes)
+	- [Querystring Formatting](#querystring-formatting)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 Backbone.queryRouter
 ====================
 
@@ -74,7 +94,9 @@ var QueryAwareRouter = Backbone.Router.extend({
     // added, removed, or changed.
     'volume': 'setVolume',
     // To listen to multiple keys, separate them with commas. Whitespace is ignored.
-    'playState, songID' : 'playSong'
+    'playState, songID' : 'playSong',
+    // To use nested properties, see the `Nested Attributes` section below.
+    'object.nestedProperty': 'nestedHandler'
   },
 
   // Each queryHandler is called with two parameters:
@@ -142,7 +164,8 @@ Usage:
 
 ```javascript
 Backbone.history.resetQuery({key: 'value', nested: {key2: 'value2'}})
-Backbone.history.resetQuery("?key=value&nested[key2]=value2")
+Backbone.history.resetQuery("?key=value&key2=value2") 
+// see `Nested Attributes` below
 Backbone.history.resetQuery("ignored/fragment?key=value&nested[key2]=value2")
 ```
 
@@ -152,14 +175,28 @@ route fragment. If you pass this method a querystring containing a `?` in a key 
 you must include the leading `?` or the querystring will be misparsed.
 
 This method is similar to `Backbone.Collection.reset`; it fires the appropriate `set` and
-`unset` methods, including the associated change events (for change events on nested attributes,
-see 'Gotchas' below). Only a single `change` event will be thrown, so there is no need to 
+`unset` methods, including the associated change events. Only a single `change` event will be thrown, so there is no need to 
 debounce your handlers.
 
-Gotchas
--------
+Nested Attributes
+-----------------
 
-While Backbone.queryRouter supports binding to nested attributes, the embedded query model
+Nested attribute support is available in 
+[backbone.queryRouter.nested.browser.js](dist/backbone.queryRouter.nested.browser.js) 
+([Production Build](dist/backbone.queryRouter.nested.browser.min.js)). 
+While this build supports binding to nested attributes, the embedded query model
 does not support firing change events on nested attributes. If you require this, simply
 include [Backbone.NestedModel](https://github.com/afeld/backbone-nested) before this
 script and the proper events will automatically be thrown.
+
+Querystring Formatting
+----------------------
+
+The smaller, non-nested build of `backbone.queryRouter` uses a nodeJS-compatible querystring library that does
+not support nested attributes. For example, the query object `{key: ['val1', 'val2']}` would be translated
+to `key=val1&key=val2` and vice-versa.
+
+In the nested build, querystring support is changed to 
+[visionmedia/node-querystring](https://github.com/visionmedia/node-querystring), which supports nested attributes.
+It also includes keys in arrays, so be sure that your server can parse them correctly. For example,
+`{key: ['val1', 'val2']}` would be translated to `key[0]=val1&key[1]=val2`.

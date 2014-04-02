@@ -46,8 +46,7 @@
 // CommonJS includes. This is a browserify module and will run both inside Node and in the browser.
 var Backbone = (window && window.Backbone) || require('backbone');
 var _ = (window && window._) || require('underscore');
-var querystring = require('qs');
-var diff = require('deep-diff');
+var querystring = require('querystring');
 
 /**
  * Backbone.History overrides.
@@ -81,10 +80,9 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
   /**
    * Model emcompassing current query state. You can read and set properties
    * on this Model and `Backbone.history.navigate()` will automatically be called.
-   * If Backbone.NestedModel is loaded, it will be used to support nested change events.
    * @type {Backbone.Model}
    */
-  query: Backbone.NestedModel ? new Backbone.NestedModel() : new Backbone.Model(),
+  query: new Backbone.Model(),
 
   getBaseRoute: function() {
     return this._stripQuery(Backbone.history.fragment);
@@ -260,30 +258,30 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
 
   /**
    * Given two objects, compute their differences and list them.
-   * When diffing deep objects, return one string for the object and one for each child.
-   * This allows functions to bind to deep properties or its parent.
-   * E.g. a change to a.b.c returns ['a', 'a.b', 'a.b.c']
+   * This does not support nested objects.
    *
-   * This uses DeepDiff (flitbit/diff), which can detect changes deep within objects.
-   * We don't use objects in querystrings quite yet, but we do arrays. And that might change.
+   * Deleted, added, or changed keys are considered diffs.
    *
    * @example
-   *   _getDiffs({q: 'foo', deep: {object: 'blah'}}, {q: 'bar', fq: 'foo', deep: {object: 'blah2'}})
-   *     -> ['q', 'fq', 'deep', 'deep.object']
+   *   _getDiffs({q: 'foo', bar: 'foo'}, {q: 'bar', bar2: 'foo'})
+   *     -> ['q', 'bar', 'bar2']
    *
    * @param  {Object} lhs Left hand object.
    * @param  {Object} rhs Right hand (new) object.
    * @return {Array}      Array of string differences.
    */
   _getDiffs: function(lhs, rhs) {
-    var diffs = diff(lhs, rhs);
-    var diffKeys = _.reduce(diffs, function(result, diff) {
-      var paths = _.map(diff.path, function(path, i) {
-        return _.first(diff.path, i + 1).join('.');
-      });
-      return result.concat(paths);
-    }, []);
-    return _.uniq(diffKeys);
+    return _.chain(lhs)
+      .keys()
+      .concat(_.keys(rhs))
+      .reduce(function(result, key){
+        if (_.result(lhs[key], 'toString') !== _.result(rhs[key], 'toString')) {
+          result.push(key);
+        }
+        return result;
+      }, [])
+      .uniq()
+      .value();
   },
 
   /**
@@ -355,8 +353,7 @@ var QueryRouter = Backbone.Router.extend(/** @lends QueryRouter# */{
    * ```javascript
    * queryRoutes: [
    *   'key1,key2,key3': 'handlerName',
-   *   'q, sort, rows': function() { // ... },
-   *   'nested.object': 'deepHandler'
+   *   'q, sort, rows': function() { // ... }
    * ]
    * ```
    */

@@ -1,16 +1,16 @@
 describe "Test query matching", ->
 
   if !Backbone.History.started
-    Backbone.history.start();
-  initialRoute = 'queryTest?foo=bar&bar=foo&nested[prop]=value&nested[prop2]=value2&nested2[prop3]=value3'
-  changedRoute = 'queryTest?foo=bar&bar=baz&nested[prop]=value&nested[prop5]=value4&nested2[prop3]=value5'
+    Backbone.history.start()
+  initialRoute = 'queryTest?foo=bar&bar=foo&buddy=guy'
+  changedRoute = 'queryTest?foo=bar&bar=baz&buddy=pal'
 
   describe "Positive query matching", ->
 
     queryCb = null
     beforeEach ->
       Backbone.history.navigate(initialRoute, {trigger: true})
-      Backbone.history.queryHandlers = [];
+      Backbone.history.queryHandlers = []
       queryCb = jasmine.createSpy('queryCb')
 
     afterEach ->
@@ -20,25 +20,12 @@ describe "Test query matching", ->
     it "Listens to a basic query change", ->
       Backbone.history.queryHandler(['bar'], queryCb)
 
-    it "Listens to an changed object value", ->
-      Backbone.history.queryHandler(['nested'], queryCb)
-
-    it "Listens to a removed child change", ->
-      Backbone.history.queryHandler(['nested.prop2'], queryCb)
-
-    it "Listens to an added child change", ->
-      Backbone.history.queryHandler(['nested.prop5'], queryCb)
-
-    it "Listens to a changed value of a child", ->
-      Backbone.history.queryHandler(['nested2.prop3'], queryCb)
-
-
   describe "Negative query matching", ->
 
     queryCb = null
     beforeEach ->
       Backbone.history.navigate(initialRoute, {trigger: true})
-      Backbone.history.queryHandlers = [];
+      Backbone.history.queryHandlers = []
       queryCb = jasmine.createSpy('queryCb')
 
     afterEach ->
@@ -55,9 +42,3 @@ describe "Test query matching", ->
     # we don't want to encourage this
     it "Should not accept a string instead of an array", ->
       Backbone.history.queryHandler('bar', queryCb)
-
-    it "Doesn't fire on an unchanged object value", ->
-      Backbone.history.queryHandler(['nested.prop'], queryCb)
-
-    it "Doesn't fire on a missing object value", ->
-      Backbone.history.queryHandler(['nested.notHere'], queryCb)
