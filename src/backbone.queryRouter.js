@@ -193,13 +193,14 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
   /**
    * When the query model changes, navigate.
    * @param  {Model}  model   Attached model.
-   * @param  {Object} options Change options (currently ignored).
+   * @param  {Object} options Change options.
    */
   onQueryModelChange: function(model, options) {
+    _.defaults(options || {}, {trigger: true});
     var baseRoute = this._stripQuery(this.fragment || '');
 
     // Write the new querystring.
-    this.navigate(baseRoute + '?' + this.query.toString(), {trigger: true});
+    this.navigate(baseRoute + '?' + this.query.toString(), options);
   },
 
   /**

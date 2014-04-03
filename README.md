@@ -173,6 +173,11 @@ Backbone.history.resetQuery({key: 'value', nested: {key2: 'value2'}})
 Backbone.history.query.reset("?key=value&key2=value2") // alias
 // see `Nested Attributes` below
 Backbone.history.resetQuery("ignored/fragment?key=value&nested[key2]=value2")
+// Don't trigger handlers
+Backbone.history.resetQuery({key: 'value'}, {trigger: false})
+// Don't trigger anything, including URL changes
+Backbone.history.resetQuery({key: 'value'}, {silent: true})
+
 ```
 
 Resets the current query value to an entirely new value. Optionally accepts a query string with or
