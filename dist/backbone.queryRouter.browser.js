@@ -409,6 +409,10 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
     if (!options) options = {};
     var queryModel = this.query;
 
+    // Reset the current record of changes.
+    queryModel._previousAttributes = _.clone(queryModel.attributes);
+    queryModel.changed = {};
+
     // Suppresses intermediate 'change' events; 'change:key' will still fire.
     // This has the added benefit of making the internal `changed` hash actually
     // correct for this operation, which means previousAttributes() and changedAttributes()
@@ -426,7 +430,7 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
     // Set new keys. To disable, set `{set: false}` in the options.
     if (options.set !== false) {
       _.each(queryObject, function(attr, key){
-        
+
         // Don't set if the stringified representation is the same. This will catch
         // single-element arrays, which is intended.
         var isSameString = _.result(queryModel.get(key), 'toString') === _.result(attr, 'toString');
