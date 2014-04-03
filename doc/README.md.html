@@ -119,9 +119,9 @@ existing routers may remain unchanged, but you gain querystring-based routing vi
 
 <p>For browsers:</p>
 
-<p><a href="dist/backbone.queryRouter.browser.js">Development Version</a> </p>
+<p><a href="dist/backbone.queryRouter.browser.js">Development Version</a> (~20KB)</p>
 
-<p><a href="dist/backbone.queryRouter.browser.min.js">Production Version</a></p>
+<p><a href="dist/backbone.queryRouter.browser.min.js">Production Version</a> (~5.5KB, ~2.5KB gzipped)</p>
 
 <p>For Node:</p>
 
@@ -136,6 +136,12 @@ existing routers may remain unchanged, but you gain querystring-based routing vi
 <p><a href="src/backbone.queryRouter.js">Readable Source</a></p>
 
 <p><a href="http://strml.github.io/backbone.queryRouter/src/backbone.queryRouter.js.html">Docs</a></p>
+
+<p>Nested model/querystring support:</p>
+
+<p><a href="dist/backbone.queryRouter.nested.browser.js">Development Version</a> (~32KB)</p>
+
+<p><a href="dist/backbone.queryRouter.nested.browser.min.js">Production Version</a> (~10KB, ~4.0KB gzipped)</p>
 
 
 <div class="pilwrap" id="description">
@@ -305,7 +311,7 @@ will automatically fire the associated query handlers, much like calling
 
 
 <div class="highlight"><pre><code><span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">resetQuery</span><span class="p">({</span><span class="nx">key</span><span class="o">:</span> <span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="nx">nested</span><span class="o">:</span> <span class="p">{</span><span class="nx">key2</span><span class="o">:</span> <span class="s1">&#39;value2&#39;</span><span class="p">}})</span>
-<span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">resetQuery</span><span class="p">(</span><span class="s2">&quot;?key=value&amp;key2=value2&quot;</span><span class="p">)</span> 
+<span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">query</span><span class="p">.</span><span class="nx">reset</span><span class="p">(</span><span class="s2">&quot;?key=value&amp;key2=value2&quot;</span><span class="p">)</span> <span class="c1">// alias</span>
 <span class="c1">// see `Nested Attributes` below</span>
 <span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">resetQuery</span><span class="p">(</span><span class="s2">&quot;ignored/fragment?key=value&amp;nested[key2]=value2&quot;</span><span class="p">)</span>
 </code></pre></div>
@@ -320,6 +326,10 @@ you must include the leading <code>?</code> or the querystring will be misparsed
 <p>This method is similar to <code>Backbone.Collection.reset</code>; it fires the appropriate <code>set</code> and
 <code>unset</code> methods, including the associated change events. Only a single <code>change</code> event will be thrown, so there is no need to 
 debounce your handlers.</p>
+
+<p>In the normal (not nested) version of this library, <code>reset({key: 'param'})</code> has the same result
+as <code>reset({key: ['param']})</code> when stringified and thus will not emit a change event if one is done
+after the other.</p>
 
 
 <div class="pilwrap" id="nested%20attributes">

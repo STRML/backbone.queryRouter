@@ -243,11 +243,7 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
   constructor: function() {
     this.previousQuery = {};
     this.queryHandlers = [];
-    this.listenTo(this.query, 'change', this.onQueryModelChange);
-    // Bind a nice toString() method for use on the query object.
-    this.query.toString = function() {
-      return querystring.stringify(this.attributes);
-    };
+    this._bindToQueryObject();
     Backbone.History.call(this);
   },
 
@@ -263,6 +259,21 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
    * @type {Backbone.Model}
    */
   query: new Backbone.Model(),
+
+  /**
+   * Set up query model overrides & event bindings.
+   */
+  _bindToQueryObject: function() {
+    this.stopListening(this.query, 'change', this.onQueryModelChange);
+    this.listenTo(this.query, 'change', this.onQueryModelChange);
+
+    // Bind a nice toString() method for use on the query object.
+    this.query.toString = function() {
+      return querystring.stringify(this.attributes);
+    };
+    // Alias resetQuery.
+    this.query.reset = _.bind(this.resetQuery, this);
+  },
 
   getBaseRoute: function() {
     return this._stripQuery(Backbone.history.fragment);
@@ -415,6 +426,16 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
     // Set new keys. To disable, set `{set: false}` in the options.
     if (options.set !== false) {
       _.each(queryObject, function(attr, key){
+        
+        // Don't set if the stringified representation is the same. This will catch
+        // single-element arrays, which is intended.
+        var isSameString = _.result(queryModel.get(key), 'toString') === _.result(attr, 'toString');
+        // Check if one or the other is an array - this prevents two objects from falsy
+        // looking the same as they stringify to [object Object].
+        // If we have nested support, we don't want to do this.
+        if (!queryModel.nestedSupport && isSameString && 
+          (_.isArray(queryModel.get(key)) || _.isArray(attr))) return;
+        
         queryModel.set(key, attr);
       });
     }
