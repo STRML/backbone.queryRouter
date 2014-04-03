@@ -35,3 +35,16 @@ describe "Test model change events & query modulation", ->
         'bar, buddy': 'testRoute'
       }
 
+  describe "Model reset tests", ->
+
+    it "Only fires one change event if reset with the same props", ->
+      model = Backbone.history.query
+      changeSpy = jasmine.createSpy('changeSpy')
+      
+      model.on('change', changeSpy)
+      model.reset({foo: 'bar', baz: 'biff'})
+      expect(changeSpy).toHaveBeenCalled()
+      
+      model.reset({foo: 'bar', baz: 'biff'})
+      model.reset({foo: 'bar', baz: 'biff'})
+      expect(changeSpy.calls.count()).toBe(1)
