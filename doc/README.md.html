@@ -314,6 +314,10 @@ will automatically fire the associated query handlers, much like calling
 <span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">query</span><span class="p">.</span><span class="nx">reset</span><span class="p">(</span><span class="s2">&quot;?key=value&amp;key2=value2&quot;</span><span class="p">)</span> <span class="c1">// alias</span>
 <span class="c1">// see `Nested Attributes` below</span>
 <span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">resetQuery</span><span class="p">(</span><span class="s2">&quot;ignored/fragment?key=value&amp;nested[key2]=value2&quot;</span><span class="p">)</span>
+<span class="c1">// Don&#39;t trigger handlers</span>
+<span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">resetQuery</span><span class="p">({</span><span class="nx">key</span><span class="o">:</span> <span class="s1">&#39;value&#39;</span><span class="p">},</span> <span class="p">{</span><span class="nx">trigger</span><span class="o">:</span> <span class="kc">false</span><span class="p">})</span>
+<span class="c1">// Don&#39;t trigger anything, including URL changes</span>
+<span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">resetQuery</span><span class="p">({</span><span class="nx">key</span><span class="o">:</span> <span class="s1">&#39;value&#39;</span><span class="p">},</span> <span class="p">{</span><span class="nx">silent</span><span class="o">:</span> <span class="kc">true</span><span class="p">})</span>
 </code></pre></div>
 
 
