@@ -1,6 +1,6 @@
 {
   "name": "backbone.queryrouter",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Trigger routes from multiple routers based on querystring parameters.",
   "main": "src/backbone.queryRouter.js",
   "scripts": {
