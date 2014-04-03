@@ -18,12 +18,10 @@ var diff = require('deep-diff');
  * If Backbone.NestedModel is loaded, it will be used to support nested change events.
  * @type {Backbone.Model}
  */
-var _toString = Backbone.history.query.toString; // must be restored later
-
 Backbone.history.query = Backbone.NestedModel ? 
   new Backbone.NestedModel() : new Backbone.Model();
-
-Backbone.history.query.toString = _toString;
+Backbone.history.query.nestedSupport = true;
+Backbone.history._bindToQueryObject();
 
 
 /**

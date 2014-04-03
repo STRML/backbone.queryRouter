@@ -170,7 +170,7 @@ Usage:
 
 ```javascript
 Backbone.history.resetQuery({key: 'value', nested: {key2: 'value2'}})
-Backbone.history.resetQuery("?key=value&key2=value2") 
+Backbone.history.query.reset("?key=value&key2=value2") // alias
 // see `Nested Attributes` below
 Backbone.history.resetQuery("ignored/fragment?key=value&nested[key2]=value2")
 ```
@@ -183,6 +183,10 @@ you must include the leading `?` or the querystring will be misparsed.
 This method is similar to `Backbone.Collection.reset`; it fires the appropriate `set` and
 `unset` methods, including the associated change events. Only a single `change` event will be thrown, so there is no need to 
 debounce your handlers.
+
+In the normal (not nested) version of this library, `reset({key: 'param'})` has the same result
+as `reset({key: ['param']})` when stringified and thus will not emit a change event if one is done
+after the other.
 
 Nested Attributes
 -----------------
