@@ -295,7 +295,7 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
 
     // Save previous query. We intentionally do not use `this.query.previousAttributes()`, as
     // it can be overwritten by a user set.
-    this.previousQuery = query;
+    this.previousQuery = _.clone(query);
 
     // Diff new and old queries.
     var diffs = this._getDiffs(previous, query);
@@ -400,6 +400,11 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
    * @param {Object} queryObject New query object.
    * @paramset Query String
    * @param {String} queryString New query string.
+   * @param {Object} options Reset options.
+   * @param {Boolean} [options.unset] If false, will not unset keys.
+   * @param {Boolean} [options.set] If false, will not set keys.
+   * @param {Boolean} [options.silent] If true, will not throw events.
+   * @param {Array} [options.keys] Pass an array of keys to restrict the reset to these keys only.
    */
   resetQuery: function(queryObject, options) {
     // Alternate usage
@@ -424,6 +429,9 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
     // set `{unset: false}` in the options.
     if (options.unset !== false) {
       _.each(queryModel.attributes, function(attr, key){
+        // Key restriction.
+        if (options.keys !== undefined && !_.contains(options.keys, key)) return;
+
         if (!queryObject[key]) queryModel.unset(key);
       });
     }
@@ -431,6 +439,8 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
     // Set new keys. To disable, set `{set: false}` in the options.
     if (options.set !== false) {
       _.each(queryObject, function(attr, key){
+        // Key restriction.
+        if (options.keys !== undefined && !_.contains(options.keys, key)) return;
 
         // Don't set if the stringified representation is the same. This will catch
         // single-element arrays, which is intended.

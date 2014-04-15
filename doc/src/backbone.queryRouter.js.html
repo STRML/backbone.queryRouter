@@ -357,7 +357,7 @@ but must be in place in case <code>loadQuery</code> is called directly.</p>
 it can be overwritten by a user set.</p>
         </td>
         <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-118" id="line-118">118</a>  
-<a class="line-num" href="#line-119" id="line-119">119</a>      <span class="k">this</span><span class="p">.</span><span class="nx">previousQuery</span> <span class="o">=</span> <span class="nx">query</span><span class="p">;</span>
+<a class="line-num" href="#line-119" id="line-119">119</a>      <span class="k">this</span><span class="p">.</span><span class="nx">previousQuery</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span><span class="nx">query</span><span class="p">);</span>
 <a class="line-num" href="#line-120" id="line-120">120</a>  
 <a class="line-num" href="#line-121" id="line-121">121</a>  
 <a class="line-num" href="#line-122" id="line-122">122</a>  </pre></div>
@@ -674,13 +674,38 @@ Similar to Backbone.Collection.reset(), but with model attributes rather than mo
       <span class="dox_type">String</span>
       <span>New query string.</span>
     </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">options</span>
+      <span class="dox_type">Object</span>
+      <span>Reset options.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">[options.unset]</span>
+      <span class="dox_type">Boolean</span>
+      <span>If false, will not unset keys.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">[options.set]</span>
+      <span class="dox_type">Boolean</span>
+      <span>If false, will not set keys.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">[options.silent]</span>
+      <span class="dox_type">Boolean</span>
+      <span>If true, will not throw events.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">[options.keys]</span>
+      <span class="dox_type">Array</span>
+      <span>Pass an array of keys to restrict the reset to these keys only.</span>
+    </div>
   </div>
 </div>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-224" id="line-224">224</a>  
-<a class="line-num" href="#line-225" id="line-225">225</a>    <span class="nx">resetQuery</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">queryObject</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
-<a class="line-num" href="#line-226" id="line-226">226</a>  
-<a class="line-num" href="#line-227" id="line-227">227</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-229" id="line-229">229</a>  
+<a class="line-num" href="#line-230" id="line-230">230</a>    <span class="nx">resetQuery</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">queryObject</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+<a class="line-num" href="#line-231" id="line-231">231</a>  
+<a class="line-num" href="#line-232" id="line-232">232</a>  </pre></div>
         </td>
       </tr>
       <tr>
@@ -690,16 +715,16 @@ Similar to Backbone.Collection.reset(), but with model attributes rather than mo
 </div>
 <p>Alternate usage</p>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-226" id="line-226">226</a>  
-<a class="line-num" href="#line-227" id="line-227">227</a>      <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">isString</span><span class="p">(</span><span class="nx">queryObject</span><span class="p">))</span> <span class="p">{</span>
-<a class="line-num" href="#line-228" id="line-228">228</a>        <span class="k">if</span> <span class="p">(</span><span class="nx">queryObject</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39;?&#39;</span><span class="p">)</span> <span class="o">===</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="nx">queryObject</span> <span class="o">=</span> <span class="s1">&#39;?&#39;</span> <span class="o">+</span> <span class="nx">queryObject</span><span class="p">;</span>
-<a class="line-num" href="#line-229" id="line-229">229</a>        <span class="nx">queryObject</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_fragmentToQueryObject</span><span class="p">(</span><span class="nx">queryObject</span><span class="p">);</span>
-<a class="line-num" href="#line-230" id="line-230">230</a>      <span class="p">}</span>
-<a class="line-num" href="#line-231" id="line-231">231</a>      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">options</span><span class="p">)</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{};</span>
-<a class="line-num" href="#line-232" id="line-232">232</a>      <span class="kd">var</span> <span class="nx">queryModel</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">query</span><span class="p">;</span>
-<a class="line-num" href="#line-233" id="line-233">233</a>  
-<a class="line-num" href="#line-234" id="line-234">234</a>  
-<a class="line-num" href="#line-235" id="line-235">235</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-231" id="line-231">231</a>  
+<a class="line-num" href="#line-232" id="line-232">232</a>      <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">isString</span><span class="p">(</span><span class="nx">queryObject</span><span class="p">))</span> <span class="p">{</span>
+<a class="line-num" href="#line-233" id="line-233">233</a>        <span class="k">if</span> <span class="p">(</span><span class="nx">queryObject</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39;?&#39;</span><span class="p">)</span> <span class="o">===</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="nx">queryObject</span> <span class="o">=</span> <span class="s1">&#39;?&#39;</span> <span class="o">+</span> <span class="nx">queryObject</span><span class="p">;</span>
+<a class="line-num" href="#line-234" id="line-234">234</a>        <span class="nx">queryObject</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_fragmentToQueryObject</span><span class="p">(</span><span class="nx">queryObject</span><span class="p">);</span>
+<a class="line-num" href="#line-235" id="line-235">235</a>      <span class="p">}</span>
+<a class="line-num" href="#line-236" id="line-236">236</a>      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">options</span><span class="p">)</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{};</span>
+<a class="line-num" href="#line-237" id="line-237">237</a>      <span class="kd">var</span> <span class="nx">queryModel</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">query</span><span class="p">;</span>
+<a class="line-num" href="#line-238" id="line-238">238</a>  
+<a class="line-num" href="#line-239" id="line-239">239</a>  
+<a class="line-num" href="#line-240" id="line-240">240</a>  </pre></div>
         </td>
       </tr>
       <tr>
@@ -709,12 +734,12 @@ Similar to Backbone.Collection.reset(), but with model attributes rather than mo
 </div>
 <p>Reset the current record of changes.</p>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-234" id="line-234">234</a>  
-<a class="line-num" href="#line-235" id="line-235">235</a>      <span class="nx">queryModel</span><span class="p">.</span><span class="nx">_previousAttributes</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span><span class="nx">queryModel</span><span class="p">.</span><span class="nx">attributes</span><span class="p">);</span>
-<a class="line-num" href="#line-236" id="line-236">236</a>      <span class="nx">queryModel</span><span class="p">.</span><span class="nx">changed</span> <span class="o">=</span> <span class="p">{};</span>
-<a class="line-num" href="#line-237" id="line-237">237</a>  
-<a class="line-num" href="#line-238" id="line-238">238</a>  
-<a class="line-num" href="#line-239" id="line-239">239</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-239" id="line-239">239</a>  
+<a class="line-num" href="#line-240" id="line-240">240</a>      <span class="nx">queryModel</span><span class="p">.</span><span class="nx">_previousAttributes</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span><span class="nx">queryModel</span><span class="p">.</span><span class="nx">attributes</span><span class="p">);</span>
+<a class="line-num" href="#line-241" id="line-241">241</a>      <span class="nx">queryModel</span><span class="p">.</span><span class="nx">changed</span> <span class="o">=</span> <span class="p">{};</span>
+<a class="line-num" href="#line-242" id="line-242">242</a>  
+<a class="line-num" href="#line-243" id="line-243">243</a>  
+<a class="line-num" href="#line-244" id="line-244">244</a>  </pre></div>
         </td>
       </tr>
       <tr>
@@ -727,11 +752,11 @@ This has the added benefit of making the internal <code>changed</code> hash actu
 correct for this operation, which means previousAttributes() and changedAttributes()
 will actually work correctly.</p>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-241" id="line-241">241</a>  
-<a class="line-num" href="#line-242" id="line-242">242</a>      <span class="nx">queryModel</span><span class="p">.</span><span class="nx">_changing</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-<a class="line-num" href="#line-243" id="line-243">243</a>  
-<a class="line-num" href="#line-244" id="line-244">244</a>  
-<a class="line-num" href="#line-245" id="line-245">245</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-246" id="line-246">246</a>  
+<a class="line-num" href="#line-247" id="line-247">247</a>      <span class="nx">queryModel</span><span class="p">.</span><span class="nx">_changing</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+<a class="line-num" href="#line-248" id="line-248">248</a>  
+<a class="line-num" href="#line-249" id="line-249">249</a>  
+<a class="line-num" href="#line-250" id="line-250">250</a>  </pre></div>
         </td>
       </tr>
       <tr>
@@ -742,15 +767,11 @@ will actually work correctly.</p>
 <p>Unset any keys inside the existing query. To disable,
 set <code>{unset: false}</code> in the options.</p>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-245" id="line-245">245</a>  
-<a class="line-num" href="#line-246" id="line-246">246</a>      <span class="k">if</span> <span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">unset</span> <span class="o">!==</span> <span class="kc">false</span><span class="p">)</span> <span class="p">{</span>
-<a class="line-num" href="#line-247" id="line-247">247</a>        <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">queryModel</span><span class="p">.</span><span class="nx">attributes</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">attr</span><span class="p">,</span> <span class="nx">key</span><span class="p">){</span>
-<a class="line-num" href="#line-248" id="line-248">248</a>          <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">queryObject</span><span class="p">[</span><span class="nx">key</span><span class="p">])</span> <span class="nx">queryModel</span><span class="p">.</span><span class="nx">unset</span><span class="p">(</span><span class="nx">key</span><span class="p">);</span>
-<a class="line-num" href="#line-249" id="line-249">249</a>        <span class="p">});</span>
-<a class="line-num" href="#line-250" id="line-250">250</a>      <span class="p">}</span>
-<a class="line-num" href="#line-251" id="line-251">251</a>  
-<a class="line-num" href="#line-252" id="line-252">252</a>  
-<a class="line-num" href="#line-253" id="line-253">253</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-250" id="line-250">250</a>  
+<a class="line-num" href="#line-251" id="line-251">251</a>      <span class="k">if</span> <span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">unset</span> <span class="o">!==</span> <span class="kc">false</span><span class="p">)</span> <span class="p">{</span>
+<a class="line-num" href="#line-252" id="line-252">252</a>        <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">queryModel</span><span class="p">.</span><span class="nx">attributes</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">attr</span><span class="p">,</span> <span class="nx">key</span><span class="p">){</span>
+<a class="line-num" href="#line-253" id="line-253">253</a>  
+<a class="line-num" href="#line-254" id="line-254">254</a>  </pre></div>
         </td>
       </tr>
       <tr>
@@ -758,14 +779,17 @@ set <code>{unset: false}</code> in the options.</p>
 <div class="pilwrap">
   <a class="pilcrow" href="#section-32" id="section-32">&#182;</a>
 </div>
-<p>Set new keys. To disable, set <code>{set: false}</code> in the options.</p>
+<p>Key restriction.</p>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-252" id="line-252">252</a>  
-<a class="line-num" href="#line-253" id="line-253">253</a>      <span class="k">if</span> <span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">set</span> <span class="o">!==</span> <span class="kc">false</span><span class="p">)</span> <span class="p">{</span>
-<a class="line-num" href="#line-254" id="line-254">254</a>        <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">queryObject</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">attr</span><span class="p">,</span> <span class="nx">key</span><span class="p">){</span>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-253" id="line-253">253</a>  
+<a class="line-num" href="#line-254" id="line-254">254</a>          <span class="k">if</span> <span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">keys</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">_</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">keys</span><span class="p">,</span> <span class="nx">key</span><span class="p">))</span> <span class="k">return</span><span class="p">;</span>
 <a class="line-num" href="#line-255" id="line-255">255</a>  
-<a class="line-num" href="#line-256" id="line-256">256</a>  
-<a class="line-num" href="#line-257" id="line-257">257</a>  </pre></div>
+<a class="line-num" href="#line-256" id="line-256">256</a>          <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">queryObject</span><span class="p">[</span><span class="nx">key</span><span class="p">])</span> <span class="nx">queryModel</span><span class="p">.</span><span class="nx">unset</span><span class="p">(</span><span class="nx">key</span><span class="p">);</span>
+<a class="line-num" href="#line-257" id="line-257">257</a>        <span class="p">});</span>
+<a class="line-num" href="#line-258" id="line-258">258</a>      <span class="p">}</span>
+<a class="line-num" href="#line-259" id="line-259">259</a>  
+<a class="line-num" href="#line-260" id="line-260">260</a>  
+<a class="line-num" href="#line-261" id="line-261">261</a>  </pre></div>
         </td>
       </tr>
       <tr>
@@ -773,13 +797,13 @@ set <code>{unset: false}</code> in the options.</p>
 <div class="pilwrap">
   <a class="pilcrow" href="#section-33" id="section-33">&#182;</a>
 </div>
-<p>Don't set if the stringified representation is the same. This will catch
-single-element arrays, which is intended.</p>
+<p>Set new keys. To disable, set <code>{set: false}</code> in the options.</p>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-257" id="line-257">257</a>  
-<a class="line-num" href="#line-258" id="line-258">258</a>          <span class="kd">var</span> <span class="nx">isSameString</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">result</span><span class="p">(</span><span class="nx">queryModel</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">key</span><span class="p">),</span> <span class="s1">&#39;toString&#39;</span><span class="p">)</span> <span class="o">===</span> <span class="nx">_</span><span class="p">.</span><span class="nx">result</span><span class="p">(</span><span class="nx">attr</span><span class="p">,</span> <span class="s1">&#39;toString&#39;</span><span class="p">);</span>
-<a class="line-num" href="#line-259" id="line-259">259</a>  
-<a class="line-num" href="#line-260" id="line-260">260</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-260" id="line-260">260</a>  
+<a class="line-num" href="#line-261" id="line-261">261</a>      <span class="k">if</span> <span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">set</span> <span class="o">!==</span> <span class="kc">false</span><span class="p">)</span> <span class="p">{</span>
+<a class="line-num" href="#line-262" id="line-262">262</a>        <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">queryObject</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">attr</span><span class="p">,</span> <span class="nx">key</span><span class="p">){</span>
+<a class="line-num" href="#line-263" id="line-263">263</a>  
+<a class="line-num" href="#line-264" id="line-264">264</a>  </pre></div>
         </td>
       </tr>
       <tr>
@@ -787,20 +811,13 @@ single-element arrays, which is intended.</p>
 <div class="pilwrap">
   <a class="pilcrow" href="#section-34" id="section-34">&#182;</a>
 </div>
-<p>Check if one or the other is an array - this prevents two objects from falsy
-looking the same as they stringify to [object Object].
-If we have nested support, we don't want to do this.</p>
+<p>Key restriction.</p>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-261" id="line-261">261</a>  
-<a class="line-num" href="#line-262" id="line-262">262</a>          <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">queryModel</span><span class="p">.</span><span class="nx">nestedSupport</span> <span class="o">&amp;&amp;</span> <span class="nx">isSameString</span> <span class="o">&amp;&amp;</span> 
-<a class="line-num" href="#line-263" id="line-263">263</a>            <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">queryModel</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">key</span><span class="p">))</span> <span class="o">||</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">attr</span><span class="p">)))</span> <span class="k">return</span><span class="p">;</span>
-<a class="line-num" href="#line-264" id="line-264">264</a>          
-<a class="line-num" href="#line-265" id="line-265">265</a>          <span class="nx">queryModel</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">attr</span><span class="p">);</span>
-<a class="line-num" href="#line-266" id="line-266">266</a>        <span class="p">});</span>
-<a class="line-num" href="#line-267" id="line-267">267</a>      <span class="p">}</span>
-<a class="line-num" href="#line-268" id="line-268">268</a>  
-<a class="line-num" href="#line-269" id="line-269">269</a>  
-<a class="line-num" href="#line-270" id="line-270">270</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-263" id="line-263">263</a>  
+<a class="line-num" href="#line-264" id="line-264">264</a>          <span class="k">if</span> <span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">keys</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">_</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">keys</span><span class="p">,</span> <span class="nx">key</span><span class="p">))</span> <span class="k">return</span><span class="p">;</span>
+<a class="line-num" href="#line-265" id="line-265">265</a>  
+<a class="line-num" href="#line-266" id="line-266">266</a>  
+<a class="line-num" href="#line-267" id="line-267">267</a>  </pre></div>
         </td>
       </tr>
       <tr>
@@ -808,23 +825,58 @@ If we have nested support, we don't want to do this.</p>
 <div class="pilwrap">
   <a class="pilcrow" href="#section-35" id="section-35">&#182;</a>
 </div>
-<p>Unset changing flag and fire change event.</p>
+<p>Don't set if the stringified representation is the same. This will catch
+single-element arrays, which is intended.</p>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-269" id="line-269">269</a>  
-<a class="line-num" href="#line-270" id="line-270">270</a>      <span class="nx">queryModel</span><span class="p">.</span><span class="nx">_changing</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
-<a class="line-num" href="#line-271" id="line-271">271</a>      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">options</span><span class="p">.</span><span class="nx">silent</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">_</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span><span class="nx">queryModel</span><span class="p">.</span><span class="nx">changed</span><span class="p">)){</span>
-<a class="line-num" href="#line-272" id="line-272">272</a>        <span class="nx">queryModel</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="nx">queryModel</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span>
-<a class="line-num" href="#line-273" id="line-273">273</a>      <span class="p">}</span>
-<a class="line-num" href="#line-274" id="line-274">274</a>    <span class="p">},</span>
-<a class="line-num" href="#line-275" id="line-275">275</a>  
-<a class="line-num" href="#line-276" id="line-276">276</a>  
-<a class="line-num" href="#line-277" id="line-277">277</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-267" id="line-267">267</a>  
+<a class="line-num" href="#line-268" id="line-268">268</a>          <span class="kd">var</span> <span class="nx">isSameString</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">result</span><span class="p">(</span><span class="nx">queryModel</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">key</span><span class="p">),</span> <span class="s1">&#39;toString&#39;</span><span class="p">)</span> <span class="o">===</span> <span class="nx">_</span><span class="p">.</span><span class="nx">result</span><span class="p">(</span><span class="nx">attr</span><span class="p">,</span> <span class="s1">&#39;toString&#39;</span><span class="p">);</span>
+<a class="line-num" href="#line-269" id="line-269">269</a>  
+<a class="line-num" href="#line-270" id="line-270">270</a>  </pre></div>
         </td>
       </tr>
       <tr>
         <td class="docs">
 <div class="pilwrap">
   <a class="pilcrow" href="#section-36" id="section-36">&#182;</a>
+</div>
+<p>Check if one or the other is an array - this prevents two objects from falsy
+looking the same as they stringify to [object Object].
+If we have nested support, we don't want to do this.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-271" id="line-271">271</a>  
+<a class="line-num" href="#line-272" id="line-272">272</a>          <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">queryModel</span><span class="p">.</span><span class="nx">nestedSupport</span> <span class="o">&amp;&amp;</span> <span class="nx">isSameString</span> <span class="o">&amp;&amp;</span> 
+<a class="line-num" href="#line-273" id="line-273">273</a>            <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">queryModel</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">key</span><span class="p">))</span> <span class="o">||</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">attr</span><span class="p">)))</span> <span class="k">return</span><span class="p">;</span>
+<a class="line-num" href="#line-274" id="line-274">274</a>          
+<a class="line-num" href="#line-275" id="line-275">275</a>          <span class="nx">queryModel</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">attr</span><span class="p">);</span>
+<a class="line-num" href="#line-276" id="line-276">276</a>        <span class="p">});</span>
+<a class="line-num" href="#line-277" id="line-277">277</a>      <span class="p">}</span>
+<a class="line-num" href="#line-278" id="line-278">278</a>  
+<a class="line-num" href="#line-279" id="line-279">279</a>  
+<a class="line-num" href="#line-280" id="line-280">280</a>  </pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-37" id="section-37">&#182;</a>
+</div>
+<p>Unset changing flag and fire change event.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-279" id="line-279">279</a>  
+<a class="line-num" href="#line-280" id="line-280">280</a>      <span class="nx">queryModel</span><span class="p">.</span><span class="nx">_changing</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+<a class="line-num" href="#line-281" id="line-281">281</a>      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">options</span><span class="p">.</span><span class="nx">silent</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">_</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span><span class="nx">queryModel</span><span class="p">.</span><span class="nx">changed</span><span class="p">)){</span>
+<a class="line-num" href="#line-282" id="line-282">282</a>        <span class="nx">queryModel</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="nx">queryModel</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span>
+<a class="line-num" href="#line-283" id="line-283">283</a>      <span class="p">}</span>
+<a class="line-num" href="#line-284" id="line-284">284</a>    <span class="p">},</span>
+<a class="line-num" href="#line-285" id="line-285">285</a>  
+<a class="line-num" href="#line-286" id="line-286">286</a>  
+<a class="line-num" href="#line-287" id="line-287">287</a>  </pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-38" id="section-38">&#182;</a>
 </div>
 <div class="dox">
   <div class="summary"><p>When Backbone.history initializes, also load the current query.</p>
@@ -841,21 +893,21 @@ If we have nested support, we don't want to do this.</p>
   </div>
 </div>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-279" id="line-279">279</a>  
-<a class="line-num" href="#line-280" id="line-280">280</a>    <span class="nx">start</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-<a class="line-num" href="#line-281" id="line-281">281</a>      <span class="kd">var</span> <span class="nx">ret</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">History</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">start</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
-<a class="line-num" href="#line-282" id="line-282">282</a>      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">silent</span><span class="p">)</span> <span class="k">this</span><span class="p">.</span><span class="nx">loadQuery</span><span class="p">();</span>
-<a class="line-num" href="#line-283" id="line-283">283</a>      <span class="k">return</span> <span class="nx">ret</span><span class="p">;</span>
-<a class="line-num" href="#line-284" id="line-284">284</a>    <span class="p">},</span>
-<a class="line-num" href="#line-285" id="line-285">285</a>  
-<a class="line-num" href="#line-286" id="line-286">286</a>  
-<a class="line-num" href="#line-287" id="line-287">287</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-289" id="line-289">289</a>  
+<a class="line-num" href="#line-290" id="line-290">290</a>    <span class="nx">start</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+<a class="line-num" href="#line-291" id="line-291">291</a>      <span class="kd">var</span> <span class="nx">ret</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">History</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">start</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
+<a class="line-num" href="#line-292" id="line-292">292</a>      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">silent</span><span class="p">)</span> <span class="k">this</span><span class="p">.</span><span class="nx">loadQuery</span><span class="p">();</span>
+<a class="line-num" href="#line-293" id="line-293">293</a>      <span class="k">return</span> <span class="nx">ret</span><span class="p">;</span>
+<a class="line-num" href="#line-294" id="line-294">294</a>    <span class="p">},</span>
+<a class="line-num" href="#line-295" id="line-295">295</a>  
+<a class="line-num" href="#line-296" id="line-296">296</a>  
+<a class="line-num" href="#line-297" id="line-297">297</a>  </pre></div>
         </td>
       </tr>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-37" id="section-37">&#182;</a>
+  <a class="pilcrow" href="#section-39" id="section-39">&#182;</a>
 </div>
 <div class="dox">
   <div class="summary"><p>Given two objects, compute their differences and list them.
@@ -882,29 +934,29 @@ This does not support nested objects.</p>
   </div>
 </div>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-299" id="line-299">299</a>  
-<a class="line-num" href="#line-300" id="line-300">300</a>    <span class="nx">_getDiffs</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">lhs</span><span class="p">,</span> <span class="nx">rhs</span><span class="p">)</span> <span class="p">{</span>
-<a class="line-num" href="#line-301" id="line-301">301</a>      <span class="k">return</span> <span class="nx">_</span><span class="p">.</span><span class="nx">chain</span><span class="p">(</span><span class="nx">lhs</span><span class="p">)</span>
-<a class="line-num" href="#line-302" id="line-302">302</a>        <span class="p">.</span><span class="nx">keys</span><span class="p">()</span>
-<a class="line-num" href="#line-303" id="line-303">303</a>        <span class="p">.</span><span class="nx">concat</span><span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">rhs</span><span class="p">))</span>
-<a class="line-num" href="#line-304" id="line-304">304</a>        <span class="p">.</span><span class="nx">reduce</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">result</span><span class="p">,</span> <span class="nx">key</span><span class="p">){</span>
-<a class="line-num" href="#line-305" id="line-305">305</a>          <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">result</span><span class="p">(</span><span class="nx">lhs</span><span class="p">[</span><span class="nx">key</span><span class="p">],</span> <span class="s1">&#39;toString&#39;</span><span class="p">)</span> <span class="o">!==</span> <span class="nx">_</span><span class="p">.</span><span class="nx">result</span><span class="p">(</span><span class="nx">rhs</span><span class="p">[</span><span class="nx">key</span><span class="p">],</span> <span class="s1">&#39;toString&#39;</span><span class="p">))</span> <span class="p">{</span>
-<a class="line-num" href="#line-306" id="line-306">306</a>            <span class="nx">result</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">key</span><span class="p">);</span>
-<a class="line-num" href="#line-307" id="line-307">307</a>          <span class="p">}</span>
-<a class="line-num" href="#line-308" id="line-308">308</a>          <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-<a class="line-num" href="#line-309" id="line-309">309</a>        <span class="p">},</span> <span class="p">[])</span>
-<a class="line-num" href="#line-310" id="line-310">310</a>        <span class="p">.</span><span class="nx">uniq</span><span class="p">()</span>
-<a class="line-num" href="#line-311" id="line-311">311</a>        <span class="p">.</span><span class="nx">value</span><span class="p">();</span>
-<a class="line-num" href="#line-312" id="line-312">312</a>    <span class="p">},</span>
-<a class="line-num" href="#line-313" id="line-313">313</a>  
-<a class="line-num" href="#line-314" id="line-314">314</a>  
-<a class="line-num" href="#line-315" id="line-315">315</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-309" id="line-309">309</a>  
+<a class="line-num" href="#line-310" id="line-310">310</a>    <span class="nx">_getDiffs</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">lhs</span><span class="p">,</span> <span class="nx">rhs</span><span class="p">)</span> <span class="p">{</span>
+<a class="line-num" href="#line-311" id="line-311">311</a>      <span class="k">return</span> <span class="nx">_</span><span class="p">.</span><span class="nx">chain</span><span class="p">(</span><span class="nx">lhs</span><span class="p">)</span>
+<a class="line-num" href="#line-312" id="line-312">312</a>        <span class="p">.</span><span class="nx">keys</span><span class="p">()</span>
+<a class="line-num" href="#line-313" id="line-313">313</a>        <span class="p">.</span><span class="nx">concat</span><span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">rhs</span><span class="p">))</span>
+<a class="line-num" href="#line-314" id="line-314">314</a>        <span class="p">.</span><span class="nx">reduce</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">result</span><span class="p">,</span> <span class="nx">key</span><span class="p">){</span>
+<a class="line-num" href="#line-315" id="line-315">315</a>          <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">result</span><span class="p">(</span><span class="nx">lhs</span><span class="p">[</span><span class="nx">key</span><span class="p">],</span> <span class="s1">&#39;toString&#39;</span><span class="p">)</span> <span class="o">!==</span> <span class="nx">_</span><span class="p">.</span><span class="nx">result</span><span class="p">(</span><span class="nx">rhs</span><span class="p">[</span><span class="nx">key</span><span class="p">],</span> <span class="s1">&#39;toString&#39;</span><span class="p">))</span> <span class="p">{</span>
+<a class="line-num" href="#line-316" id="line-316">316</a>            <span class="nx">result</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">key</span><span class="p">);</span>
+<a class="line-num" href="#line-317" id="line-317">317</a>          <span class="p">}</span>
+<a class="line-num" href="#line-318" id="line-318">318</a>          <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+<a class="line-num" href="#line-319" id="line-319">319</a>        <span class="p">},</span> <span class="p">[])</span>
+<a class="line-num" href="#line-320" id="line-320">320</a>        <span class="p">.</span><span class="nx">uniq</span><span class="p">()</span>
+<a class="line-num" href="#line-321" id="line-321">321</a>        <span class="p">.</span><span class="nx">value</span><span class="p">();</span>
+<a class="line-num" href="#line-322" id="line-322">322</a>    <span class="p">},</span>
+<a class="line-num" href="#line-323" id="line-323">323</a>  
+<a class="line-num" href="#line-324" id="line-324">324</a>  
+<a class="line-num" href="#line-325" id="line-325">325</a>  </pre></div>
         </td>
       </tr>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-38" id="section-38">&#182;</a>
+  <a class="pilcrow" href="#section-40" id="section-40">&#182;</a>
 </div>
 <div class="dox">
   <div class="summary"><p>Given a fragment, return a query object.</p>
@@ -926,23 +978,23 @@ This does not support nested objects.</p>
   </div>
 </div>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-318" id="line-318">318</a>  
-<a class="line-num" href="#line-319" id="line-319">319</a>    <span class="nx">_fragmentToQueryObject</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fragment</span><span class="p">)</span> <span class="p">{</span>
-<a class="line-num" href="#line-320" id="line-320">320</a>      <span class="k">try</span> <span class="p">{</span>
-<a class="line-num" href="#line-321" id="line-321">321</a>        <span class="k">return</span> <span class="nx">querystring</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_fragmentToQueryString</span><span class="p">(</span><span class="nx">fragment</span><span class="p">));</span>
-<a class="line-num" href="#line-322" id="line-322">322</a>      <span class="p">}</span> <span class="k">catch</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-<a class="line-num" href="#line-323" id="line-323">323</a>        <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;Unable to parse fragment into query object: &quot;</span> <span class="o">+</span> <span class="nx">fragment</span><span class="p">);</span>
-<a class="line-num" href="#line-324" id="line-324">324</a>      <span class="p">}</span>
-<a class="line-num" href="#line-325" id="line-325">325</a>    <span class="p">},</span>
-<a class="line-num" href="#line-326" id="line-326">326</a>  
-<a class="line-num" href="#line-327" id="line-327">327</a>  
-<a class="line-num" href="#line-328" id="line-328">328</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-328" id="line-328">328</a>  
+<a class="line-num" href="#line-329" id="line-329">329</a>    <span class="nx">_fragmentToQueryObject</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fragment</span><span class="p">)</span> <span class="p">{</span>
+<a class="line-num" href="#line-330" id="line-330">330</a>      <span class="k">try</span> <span class="p">{</span>
+<a class="line-num" href="#line-331" id="line-331">331</a>        <span class="k">return</span> <span class="nx">querystring</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_fragmentToQueryString</span><span class="p">(</span><span class="nx">fragment</span><span class="p">));</span>
+<a class="line-num" href="#line-332" id="line-332">332</a>      <span class="p">}</span> <span class="k">catch</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+<a class="line-num" href="#line-333" id="line-333">333</a>        <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;Unable to parse fragment into query object: &quot;</span> <span class="o">+</span> <span class="nx">fragment</span><span class="p">);</span>
+<a class="line-num" href="#line-334" id="line-334">334</a>      <span class="p">}</span>
+<a class="line-num" href="#line-335" id="line-335">335</a>    <span class="p">},</span>
+<a class="line-num" href="#line-336" id="line-336">336</a>  
+<a class="line-num" href="#line-337" id="line-337">337</a>  
+<a class="line-num" href="#line-338" id="line-338">338</a>  </pre></div>
         </td>
       </tr>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-39" id="section-39">&#182;</a>
+  <a class="pilcrow" href="#section-41" id="section-41">&#182;</a>
 </div>
 <div class="dox">
   <div class="summary"><p>Given a fragment, return a query string.</p>
@@ -964,21 +1016,21 @@ This does not support nested objects.</p>
   </div>
 </div>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-331" id="line-331">331</a>  
-<a class="line-num" href="#line-332" id="line-332">332</a>    <span class="nx">_fragmentToQueryString</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fragment</span><span class="p">)</span> <span class="p">{</span>
-<a class="line-num" href="#line-333" id="line-333">333</a>      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">fragment</span><span class="p">)</span> <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
-<a class="line-num" href="#line-334" id="line-334">334</a>      <span class="kd">var</span> <span class="nx">match</span> <span class="o">=</span> <span class="nx">fragment</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">queryMatcher</span><span class="p">);</span>
-<a class="line-num" href="#line-335" id="line-335">335</a>      <span class="k">return</span> <span class="nx">match</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">||</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
-<a class="line-num" href="#line-336" id="line-336">336</a>    <span class="p">},</span>
-<a class="line-num" href="#line-337" id="line-337">337</a>  
-<a class="line-num" href="#line-338" id="line-338">338</a>  
-<a class="line-num" href="#line-339" id="line-339">339</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-341" id="line-341">341</a>  
+<a class="line-num" href="#line-342" id="line-342">342</a>    <span class="nx">_fragmentToQueryString</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fragment</span><span class="p">)</span> <span class="p">{</span>
+<a class="line-num" href="#line-343" id="line-343">343</a>      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">fragment</span><span class="p">)</span> <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+<a class="line-num" href="#line-344" id="line-344">344</a>      <span class="kd">var</span> <span class="nx">match</span> <span class="o">=</span> <span class="nx">fragment</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">queryMatcher</span><span class="p">);</span>
+<a class="line-num" href="#line-345" id="line-345">345</a>      <span class="k">return</span> <span class="nx">match</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">||</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+<a class="line-num" href="#line-346" id="line-346">346</a>    <span class="p">},</span>
+<a class="line-num" href="#line-347" id="line-347">347</a>  
+<a class="line-num" href="#line-348" id="line-348">348</a>  
+<a class="line-num" href="#line-349" id="line-349">349</a>  </pre></div>
         </td>
       </tr>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-40" id="section-40">&#182;</a>
+  <a class="pilcrow" href="#section-42" id="section-42">&#182;</a>
 </div>
 <div class="dox">
   <div class="summary"><p>Synchronize the internal query model with the fragment.</p>
@@ -1005,47 +1057,47 @@ This does not support nested objects.</p>
   </div>
 </div>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-343" id="line-343">343</a>  
-<a class="line-num" href="#line-344" id="line-344">344</a>    <span class="nx">_syncQueryModelFromFragment</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fragment</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
-<a class="line-num" href="#line-345" id="line-345">345</a>  
-<a class="line-num" href="#line-346" id="line-346">346</a>  </pre></div>
-        </td>
-      </tr>
-      <tr>
-        <td class="docs">
-<div class="pilwrap">
-  <a class="pilcrow" href="#section-41" id="section-41">&#182;</a>
-</div>
-<p>Set internal query object.</p>
-        </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-345" id="line-345">345</a>  
-<a class="line-num" href="#line-346" id="line-346">346</a>      <span class="kd">var</span> <span class="nx">query</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_fragmentToQueryObject</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">fragment</span><span class="p">);</span>
-<a class="line-num" href="#line-347" id="line-347">347</a>  
-<a class="line-num" href="#line-348" id="line-348">348</a>  
-<a class="line-num" href="#line-349" id="line-349">349</a>  </pre></div>
-        </td>
-      </tr>
-      <tr>
-        <td class="docs">
-<div class="pilwrap">
-  <a class="pilcrow" href="#section-42" id="section-42">&#182;</a>
-</div>
-<p>Set embedded model to new query object, firing 'change' events when necessary.</p>
-        </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-348" id="line-348">348</a>  
-<a class="line-num" href="#line-349" id="line-349">349</a>      <span class="k">this</span><span class="p">.</span><span class="nx">stopListening</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">query</span><span class="p">,</span> <span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">onQueryModelChange</span><span class="p">);</span>
-<a class="line-num" href="#line-350" id="line-350">350</a>      <span class="k">this</span><span class="p">.</span><span class="nx">resetQuery</span><span class="p">(</span><span class="nx">query</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span>
-<a class="line-num" href="#line-351" id="line-351">351</a>      <span class="k">this</span><span class="p">.</span><span class="nx">listenTo</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">query</span><span class="p">,</span> <span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">onQueryModelChange</span><span class="p">);</span>
-<a class="line-num" href="#line-352" id="line-352">352</a>    <span class="p">},</span>
-<a class="line-num" href="#line-353" id="line-353">353</a>  
-<a class="line-num" href="#line-354" id="line-354">354</a>  
-<a class="line-num" href="#line-355" id="line-355">355</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-353" id="line-353">353</a>  
+<a class="line-num" href="#line-354" id="line-354">354</a>    <span class="nx">_syncQueryModelFromFragment</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fragment</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+<a class="line-num" href="#line-355" id="line-355">355</a>  
+<a class="line-num" href="#line-356" id="line-356">356</a>  </pre></div>
         </td>
       </tr>
       <tr>
         <td class="docs">
 <div class="pilwrap">
   <a class="pilcrow" href="#section-43" id="section-43">&#182;</a>
+</div>
+<p>Set internal query object.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-355" id="line-355">355</a>  
+<a class="line-num" href="#line-356" id="line-356">356</a>      <span class="kd">var</span> <span class="nx">query</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_fragmentToQueryObject</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">fragment</span><span class="p">);</span>
+<a class="line-num" href="#line-357" id="line-357">357</a>  
+<a class="line-num" href="#line-358" id="line-358">358</a>  
+<a class="line-num" href="#line-359" id="line-359">359</a>  </pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-44" id="section-44">&#182;</a>
+</div>
+<p>Set embedded model to new query object, firing 'change' events when necessary.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-358" id="line-358">358</a>  
+<a class="line-num" href="#line-359" id="line-359">359</a>      <span class="k">this</span><span class="p">.</span><span class="nx">stopListening</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">query</span><span class="p">,</span> <span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">onQueryModelChange</span><span class="p">);</span>
+<a class="line-num" href="#line-360" id="line-360">360</a>      <span class="k">this</span><span class="p">.</span><span class="nx">resetQuery</span><span class="p">(</span><span class="nx">query</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span>
+<a class="line-num" href="#line-361" id="line-361">361</a>      <span class="k">this</span><span class="p">.</span><span class="nx">listenTo</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">query</span><span class="p">,</span> <span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">onQueryModelChange</span><span class="p">);</span>
+<a class="line-num" href="#line-362" id="line-362">362</a>    <span class="p">},</span>
+<a class="line-num" href="#line-363" id="line-363">363</a>  
+<a class="line-num" href="#line-364" id="line-364">364</a>  
+<a class="line-num" href="#line-365" id="line-365">365</a>  </pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-45" id="section-45">&#182;</a>
 </div>
 <div class="dox">
   <div class="summary"><p>Strip a querystring from a fragment.</p>
@@ -1067,21 +1119,21 @@ This does not support nested objects.</p>
   </div>
 </div>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-358" id="line-358">358</a>  
-<a class="line-num" href="#line-359" id="line-359">359</a>    <span class="nx">_stripQuery</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fragment</span><span class="p">)</span> <span class="p">{</span>
-<a class="line-num" href="#line-360" id="line-360">360</a>      <span class="k">return</span> <span class="nx">fragment</span> <span class="o">?</span> <span class="nx">fragment</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;?&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">:</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
-<a class="line-num" href="#line-361" id="line-361">361</a>    <span class="p">}</span>
-<a class="line-num" href="#line-362" id="line-362">362</a>  <span class="p">});</span>
-<a class="line-num" href="#line-363" id="line-363">363</a>  
-<a class="line-num" href="#line-364" id="line-364">364</a>  <span class="kd">var</span> <span class="nx">RouterProto</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Router</span><span class="p">.</span><span class="nx">prototype</span><span class="p">;</span>
-<a class="line-num" href="#line-365" id="line-365">365</a>  
-<a class="line-num" href="#line-366" id="line-366">366</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-368" id="line-368">368</a>  
+<a class="line-num" href="#line-369" id="line-369">369</a>    <span class="nx">_stripQuery</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fragment</span><span class="p">)</span> <span class="p">{</span>
+<a class="line-num" href="#line-370" id="line-370">370</a>      <span class="k">return</span> <span class="nx">fragment</span> <span class="o">?</span> <span class="nx">fragment</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;?&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">:</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+<a class="line-num" href="#line-371" id="line-371">371</a>    <span class="p">}</span>
+<a class="line-num" href="#line-372" id="line-372">372</a>  <span class="p">});</span>
+<a class="line-num" href="#line-373" id="line-373">373</a>  
+<a class="line-num" href="#line-374" id="line-374">374</a>  <span class="kd">var</span> <span class="nx">RouterProto</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Router</span><span class="p">.</span><span class="nx">prototype</span><span class="p">;</span>
+<a class="line-num" href="#line-375" id="line-375">375</a>  
+<a class="line-num" href="#line-376" id="line-376">376</a>  </pre></div>
         </td>
       </tr>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-44" id="section-44">&#182;</a>
+  <a class="pilcrow" href="#section-46" id="section-46">&#182;</a>
 </div>
 <div class="dox">
   <div class="summary"><p>Backbone.Router overrides.</p>
@@ -1097,16 +1149,16 @@ This does not support nested objects.</p>
   </div>
 </div>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-368" id="line-368">368</a>  
-<a class="line-num" href="#line-369" id="line-369">369</a>  <span class="kd">var</span> <span class="nx">QueryRouter</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Router</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="cm">/** @lends QueryRouter# */</span><span class="p">{</span>
-<a class="line-num" href="#line-370" id="line-370">370</a>  
-<a class="line-num" href="#line-371" id="line-371">371</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-378" id="line-378">378</a>  
+<a class="line-num" href="#line-379" id="line-379">379</a>  <span class="kd">var</span> <span class="nx">QueryRouter</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Router</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="cm">/** @lends QueryRouter# */</span><span class="p">{</span>
+<a class="line-num" href="#line-380" id="line-380">380</a>  
+<a class="line-num" href="#line-381" id="line-381">381</a>  </pre></div>
         </td>
       </tr>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-45" id="section-45">&#182;</a>
+  <a class="pilcrow" href="#section-47" id="section-47">&#182;</a>
 </div>
 <div class="dox">
   <div class="summary"><p>Bind query routes.</p>
@@ -1129,25 +1181,25 @@ events).</p>
   </div>
 </div>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-386" id="line-386">386</a>  
-<a class="line-num" href="#line-387" id="line-387">387</a>    <span class="nx">_bindRoutes</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-<a class="line-num" href="#line-388" id="line-388">388</a>      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">queryRoutes</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
-<a class="line-num" href="#line-389" id="line-389">389</a>      <span class="k">this</span><span class="p">.</span><span class="nx">queryRoutes</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">result</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;queryRoutes&#39;</span><span class="p">);</span>
-<a class="line-num" href="#line-390" id="line-390">390</a>      <span class="kd">var</span> <span class="nx">qRoute</span><span class="p">,</span> <span class="nx">qRoutes</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">queryRoutes</span><span class="p">);</span>
-<a class="line-num" href="#line-391" id="line-391">391</a>      <span class="k">while</span> <span class="p">((</span><span class="nx">qRoute</span> <span class="o">=</span> <span class="nx">qRoutes</span><span class="p">.</span><span class="nx">pop</span><span class="p">())</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
-<a class="line-num" href="#line-392" id="line-392">392</a>        <span class="k">this</span><span class="p">.</span><span class="nx">queryHandler</span><span class="p">(</span><span class="nx">qRoute</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">queryRoutes</span><span class="p">[</span><span class="nx">qRoute</span><span class="p">]);</span>
-<a class="line-num" href="#line-393" id="line-393">393</a>      <span class="p">}</span>
-<a class="line-num" href="#line-394" id="line-394">394</a>      <span class="nx">RouterProto</span><span class="p">.</span><span class="nx">_bindRoutes</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
-<a class="line-num" href="#line-395" id="line-395">395</a>    <span class="p">},</span>
-<a class="line-num" href="#line-396" id="line-396">396</a>  
-<a class="line-num" href="#line-397" id="line-397">397</a>  
-<a class="line-num" href="#line-398" id="line-398">398</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-396" id="line-396">396</a>  
+<a class="line-num" href="#line-397" id="line-397">397</a>    <span class="nx">_bindRoutes</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+<a class="line-num" href="#line-398" id="line-398">398</a>      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">queryRoutes</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+<a class="line-num" href="#line-399" id="line-399">399</a>      <span class="k">this</span><span class="p">.</span><span class="nx">queryRoutes</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">result</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;queryRoutes&#39;</span><span class="p">);</span>
+<a class="line-num" href="#line-400" id="line-400">400</a>      <span class="kd">var</span> <span class="nx">qRoute</span><span class="p">,</span> <span class="nx">qRoutes</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">queryRoutes</span><span class="p">);</span>
+<a class="line-num" href="#line-401" id="line-401">401</a>      <span class="k">while</span> <span class="p">((</span><span class="nx">qRoute</span> <span class="o">=</span> <span class="nx">qRoutes</span><span class="p">.</span><span class="nx">pop</span><span class="p">())</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+<a class="line-num" href="#line-402" id="line-402">402</a>        <span class="k">this</span><span class="p">.</span><span class="nx">queryHandler</span><span class="p">(</span><span class="nx">qRoute</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">queryRoutes</span><span class="p">[</span><span class="nx">qRoute</span><span class="p">]);</span>
+<a class="line-num" href="#line-403" id="line-403">403</a>      <span class="p">}</span>
+<a class="line-num" href="#line-404" id="line-404">404</a>      <span class="nx">RouterProto</span><span class="p">.</span><span class="nx">_bindRoutes</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
+<a class="line-num" href="#line-405" id="line-405">405</a>    <span class="p">},</span>
+<a class="line-num" href="#line-406" id="line-406">406</a>  
+<a class="line-num" href="#line-407" id="line-407">407</a>  
+<a class="line-num" href="#line-408" id="line-408">408</a>  </pre></div>
         </td>
       </tr>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-46" id="section-46">&#182;</a>
+  <a class="pilcrow" href="#section-48" id="section-48">&#182;</a>
 </div>
 <div class="dox">
   <div class="summary"><p>Navigate a base route only, while maintaining the current query.
@@ -1168,20 +1220,20 @@ Delegates to <code>Backbone.history.navigateBase</code>.</p>
   </div>
 </div>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-402" id="line-402">402</a>  
-<a class="line-num" href="#line-403" id="line-403">403</a>    <span class="nx">navigateBase</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fragment</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
-<a class="line-num" href="#line-404" id="line-404">404</a>      <span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">navigateBase</span><span class="p">(</span><span class="nx">fragment</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span>
-<a class="line-num" href="#line-405" id="line-405">405</a>      <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-<a class="line-num" href="#line-406" id="line-406">406</a>    <span class="p">},</span>
-<a class="line-num" href="#line-407" id="line-407">407</a>  
-<a class="line-num" href="#line-408" id="line-408">408</a>  
-<a class="line-num" href="#line-409" id="line-409">409</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-412" id="line-412">412</a>  
+<a class="line-num" href="#line-413" id="line-413">413</a>    <span class="nx">navigateBase</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fragment</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+<a class="line-num" href="#line-414" id="line-414">414</a>      <span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">navigateBase</span><span class="p">(</span><span class="nx">fragment</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span>
+<a class="line-num" href="#line-415" id="line-415">415</a>      <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+<a class="line-num" href="#line-416" id="line-416">416</a>    <span class="p">},</span>
+<a class="line-num" href="#line-417" id="line-417">417</a>  
+<a class="line-num" href="#line-418" id="line-418">418</a>  
+<a class="line-num" href="#line-419" id="line-419">419</a>  </pre></div>
         </td>
       </tr>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-47" id="section-47">&#182;</a>
+  <a class="pilcrow" href="#section-49" id="section-49">&#182;</a>
 </div>
 <div class="dox">
   <div class="summary"><p>Bind a queryHandler. Very similar to Backbone.Router#route, except that args
@@ -1207,45 +1259,45 @@ in the router from the fragment.</p>
   </div>
 </div>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-415" id="line-415">415</a>  
-<a class="line-num" href="#line-416" id="line-416">416</a>    <span class="nx">queryHandler</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">bindings</span><span class="p">,</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">callback</span><span class="p">)</span> <span class="p">{</span>
-<a class="line-num" href="#line-417" id="line-417">417</a>      <span class="nx">bindings</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_normalizeBindings</span><span class="p">(</span><span class="nx">bindings</span><span class="p">);</span>
-<a class="line-num" href="#line-418" id="line-418">418</a>      <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span><span class="nx">name</span><span class="p">))</span> <span class="p">{</span>
-<a class="line-num" href="#line-419" id="line-419">419</a>        <span class="nx">callback</span> <span class="o">=</span> <span class="nx">name</span><span class="p">;</span>
-<a class="line-num" href="#line-420" id="line-420">420</a>        <span class="nx">name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
-<a class="line-num" href="#line-421" id="line-421">421</a>      <span class="p">}</span>
-<a class="line-num" href="#line-422" id="line-422">422</a>      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">callback</span><span class="p">)</span> <span class="nx">callback</span> <span class="o">=</span> <span class="k">this</span><span class="p">[</span><span class="nx">name</span><span class="p">];</span>
-<a class="line-num" href="#line-423" id="line-423">423</a>      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">callback</span><span class="p">)</span> <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;QueryHandler not found: &quot;</span> <span class="o">+</span> <span class="k">this</span><span class="p">[</span><span class="nx">name</span><span class="p">]);</span>
-<a class="line-num" href="#line-424" id="line-424">424</a>      <span class="kd">var</span> <span class="nx">router</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-<a class="line-num" href="#line-425" id="line-425">425</a>      <span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">queryHandler</span><span class="p">(</span><span class="nx">bindings</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fragment</span><span class="p">,</span> <span class="nx">queryObj</span><span class="p">,</span> <span class="nx">queryKeys</span><span class="p">)</span> <span class="p">{</span>
-<a class="line-num" href="#line-426" id="line-426">426</a>  
-<a class="line-num" href="#line-427" id="line-427">427</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-425" id="line-425">425</a>  
+<a class="line-num" href="#line-426" id="line-426">426</a>    <span class="nx">queryHandler</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">bindings</span><span class="p">,</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">callback</span><span class="p">)</span> <span class="p">{</span>
+<a class="line-num" href="#line-427" id="line-427">427</a>      <span class="nx">bindings</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_normalizeBindings</span><span class="p">(</span><span class="nx">bindings</span><span class="p">);</span>
+<a class="line-num" href="#line-428" id="line-428">428</a>      <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span><span class="nx">name</span><span class="p">))</span> <span class="p">{</span>
+<a class="line-num" href="#line-429" id="line-429">429</a>        <span class="nx">callback</span> <span class="o">=</span> <span class="nx">name</span><span class="p">;</span>
+<a class="line-num" href="#line-430" id="line-430">430</a>        <span class="nx">name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+<a class="line-num" href="#line-431" id="line-431">431</a>      <span class="p">}</span>
+<a class="line-num" href="#line-432" id="line-432">432</a>      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">callback</span><span class="p">)</span> <span class="nx">callback</span> <span class="o">=</span> <span class="k">this</span><span class="p">[</span><span class="nx">name</span><span class="p">];</span>
+<a class="line-num" href="#line-433" id="line-433">433</a>      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">callback</span><span class="p">)</span> <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;QueryHandler not found: &quot;</span> <span class="o">+</span> <span class="k">this</span><span class="p">[</span><span class="nx">name</span><span class="p">]);</span>
+<a class="line-num" href="#line-434" id="line-434">434</a>      <span class="kd">var</span> <span class="nx">router</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+<a class="line-num" href="#line-435" id="line-435">435</a>      <span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">queryHandler</span><span class="p">(</span><span class="nx">bindings</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fragment</span><span class="p">,</span> <span class="nx">queryObj</span><span class="p">,</span> <span class="nx">queryKeys</span><span class="p">)</span> <span class="p">{</span>
+<a class="line-num" href="#line-436" id="line-436">436</a>  
+<a class="line-num" href="#line-437" id="line-437">437</a>  </pre></div>
         </td>
       </tr>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-48" id="section-48">&#182;</a>
+  <a class="pilcrow" href="#section-50" id="section-50">&#182;</a>
 </div>
 <p>Emulate method signatures used on normal routes</p>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-426" id="line-426">426</a>  
-<a class="line-num" href="#line-427" id="line-427">427</a>        <span class="nx">router</span><span class="p">.</span><span class="nx">execute</span><span class="p">(</span><span class="nx">callback</span><span class="p">,</span> <span class="p">[</span><span class="nx">queryObj</span><span class="p">,</span> <span class="nx">queryKeys</span><span class="p">]);</span>
-<a class="line-num" href="#line-428" id="line-428">428</a>        <span class="nx">router</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;route:&#39;</span> <span class="o">+</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">queryKeys</span><span class="p">,</span> <span class="nx">queryObj</span><span class="p">);</span>
-<a class="line-num" href="#line-429" id="line-429">429</a>        <span class="nx">router</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;route&#39;</span><span class="p">,</span> <span class="nx">name</span><span class="p">,</span> <span class="p">[</span><span class="nx">queryObj</span><span class="p">,</span> <span class="nx">queryKeys</span><span class="p">]);</span>
-<a class="line-num" href="#line-430" id="line-430">430</a>        <span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;route&#39;</span><span class="p">,</span> <span class="nx">router</span><span class="p">,</span> <span class="nx">name</span><span class="p">,</span> <span class="p">[</span><span class="nx">queryObj</span><span class="p">,</span> <span class="nx">queryKeys</span><span class="p">]);</span>
-<a class="line-num" href="#line-431" id="line-431">431</a>      <span class="p">});</span>
-<a class="line-num" href="#line-432" id="line-432">432</a>      <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-<a class="line-num" href="#line-433" id="line-433">433</a>    <span class="p">},</span>
-<a class="line-num" href="#line-434" id="line-434">434</a>  
-<a class="line-num" href="#line-435" id="line-435">435</a>  
-<a class="line-num" href="#line-436" id="line-436">436</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-436" id="line-436">436</a>  
+<a class="line-num" href="#line-437" id="line-437">437</a>        <span class="nx">router</span><span class="p">.</span><span class="nx">execute</span><span class="p">(</span><span class="nx">callback</span><span class="p">,</span> <span class="p">[</span><span class="nx">queryObj</span><span class="p">,</span> <span class="nx">queryKeys</span><span class="p">]);</span>
+<a class="line-num" href="#line-438" id="line-438">438</a>        <span class="nx">router</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;route:&#39;</span> <span class="o">+</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">queryKeys</span><span class="p">,</span> <span class="nx">queryObj</span><span class="p">);</span>
+<a class="line-num" href="#line-439" id="line-439">439</a>        <span class="nx">router</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;route&#39;</span><span class="p">,</span> <span class="nx">name</span><span class="p">,</span> <span class="p">[</span><span class="nx">queryObj</span><span class="p">,</span> <span class="nx">queryKeys</span><span class="p">]);</span>
+<a class="line-num" href="#line-440" id="line-440">440</a>        <span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;route&#39;</span><span class="p">,</span> <span class="nx">router</span><span class="p">,</span> <span class="nx">name</span><span class="p">,</span> <span class="p">[</span><span class="nx">queryObj</span><span class="p">,</span> <span class="nx">queryKeys</span><span class="p">]);</span>
+<a class="line-num" href="#line-441" id="line-441">441</a>      <span class="p">});</span>
+<a class="line-num" href="#line-442" id="line-442">442</a>      <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+<a class="line-num" href="#line-443" id="line-443">443</a>    <span class="p">},</span>
+<a class="line-num" href="#line-444" id="line-444">444</a>  
+<a class="line-num" href="#line-445" id="line-445">445</a>  
+<a class="line-num" href="#line-446" id="line-446">446</a>  </pre></div>
         </td>
       </tr>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-49" id="section-49">&#182;</a>
+  <a class="pilcrow" href="#section-51" id="section-51">&#182;</a>
 </div>
 <div class="dox">
   <div class="summary"><p>Normalize bindings - convert to array and trim whitespace.</p>
@@ -1267,43 +1319,43 @@ in the router from the fragment.</p>
   </div>
 </div>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-439" id="line-439">439</a>  
-<a class="line-num" href="#line-440" id="line-440">440</a>    <span class="nx">_normalizeBindings</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">bindings</span><span class="p">)</span> <span class="p">{</span>
-<a class="line-num" href="#line-441" id="line-441">441</a>      <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">isString</span><span class="p">(</span><span class="nx">bindings</span><span class="p">))</span> <span class="p">{</span>
-<a class="line-num" href="#line-442" id="line-442">442</a>        <span class="nx">bindings</span> <span class="o">=</span> <span class="nx">bindings</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">);</span>
-<a class="line-num" href="#line-443" id="line-443">443</a>      <span class="p">}</span>
-<a class="line-num" href="#line-444" id="line-444">444</a>      <span class="k">return</span> <span class="nx">_</span><span class="p">.</span><span class="nx">invoke</span><span class="p">(</span><span class="nx">bindings</span><span class="p">,</span> <span class="s1">&#39;trim&#39;</span><span class="p">);</span>
-<a class="line-num" href="#line-445" id="line-445">445</a>    <span class="p">}</span>
-<a class="line-num" href="#line-446" id="line-446">446</a>  <span class="p">});</span>
-<a class="line-num" href="#line-447" id="line-447">447</a>  
-<a class="line-num" href="#line-448" id="line-448">448</a>  
-<a class="line-num" href="#line-449" id="line-449">449</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-449" id="line-449">449</a>  
+<a class="line-num" href="#line-450" id="line-450">450</a>    <span class="nx">_normalizeBindings</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">bindings</span><span class="p">)</span> <span class="p">{</span>
+<a class="line-num" href="#line-451" id="line-451">451</a>      <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">isString</span><span class="p">(</span><span class="nx">bindings</span><span class="p">))</span> <span class="p">{</span>
+<a class="line-num" href="#line-452" id="line-452">452</a>        <span class="nx">bindings</span> <span class="o">=</span> <span class="nx">bindings</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">);</span>
+<a class="line-num" href="#line-453" id="line-453">453</a>      <span class="p">}</span>
+<a class="line-num" href="#line-454" id="line-454">454</a>      <span class="k">return</span> <span class="nx">_</span><span class="p">.</span><span class="nx">invoke</span><span class="p">(</span><span class="nx">bindings</span><span class="p">,</span> <span class="s1">&#39;trim&#39;</span><span class="p">);</span>
+<a class="line-num" href="#line-455" id="line-455">455</a>    <span class="p">}</span>
+<a class="line-num" href="#line-456" id="line-456">456</a>  <span class="p">});</span>
+<a class="line-num" href="#line-457" id="line-457">457</a>  
+<a class="line-num" href="#line-458" id="line-458">458</a>  
+<a class="line-num" href="#line-459" id="line-459">459</a>  </pre></div>
         </td>
       </tr>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-50" id="section-50">&#182;</a>
+  <a class="pilcrow" href="#section-52" id="section-52">&#182;</a>
 </div>
 <p>Override default Backbone.Router constructor.</p>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-448" id="line-448">448</a>  
-<a class="line-num" href="#line-449" id="line-449">449</a>  <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Router</span> <span class="o">=</span> <span class="nx">QueryRouter</span><span class="p">;</span>
-<a class="line-num" href="#line-450" id="line-450">450</a>  
-<a class="line-num" href="#line-451" id="line-451">451</a>  
-<a class="line-num" href="#line-452" id="line-452">452</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-458" id="line-458">458</a>  
+<a class="line-num" href="#line-459" id="line-459">459</a>  <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Router</span> <span class="o">=</span> <span class="nx">QueryRouter</span><span class="p">;</span>
+<a class="line-num" href="#line-460" id="line-460">460</a>  
+<a class="line-num" href="#line-461" id="line-461">461</a>  
+<a class="line-num" href="#line-462" id="line-462">462</a>  </pre></div>
         </td>
       </tr>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-51" id="section-51">&#182;</a>
+  <a class="pilcrow" href="#section-53" id="section-53">&#182;</a>
 </div>
 <p>Replace Backbone.history.</p>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-451" id="line-451">451</a>  
-<a class="line-num" href="#line-452" id="line-452">452</a>  <span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">QueryHistory</span><span class="p">();</span>
-<a class="line-num" href="#line-453" id="line-453">453</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-461" id="line-461">461</a>  
+<a class="line-num" href="#line-462" id="line-462">462</a>  <span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">QueryHistory</span><span class="p">();</span>
+<a class="line-num" href="#line-463" id="line-463">463</a>  </pre></div>
         </td>
       </tr>
   </tbody>

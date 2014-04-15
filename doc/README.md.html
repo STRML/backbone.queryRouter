@@ -49,7 +49,7 @@
         <a href="#backbone.history.query%20-%3E%20backbone.model">Backbone.history.query -> Backbone.Model</a>
       </div>
       <div class="heading h3">
-        <a href="#backbone.history.resetquery(object%7Cstring%20query)">Backbone.history.resetQuery(Object|String query)</a>
+        <a href="#backbone.history.resetquery(object%7Cstring%20query%2C%20object%20options)">Backbone.history.resetQuery(Object|String query, Object options)</a>
       </div>
       <div class="heading h2">
         <a href="#nested%20attributes">Nested Attributes</a>
@@ -299,10 +299,10 @@ will automatically fire the associated query handlers, much like calling
 <p>Call <code>Backbone.history.query.toString()</code> to get the current query string.</p>
 
 
-<div class="pilwrap" id="backbone.history.resetquery(object%7Cstring%20query)">
+<div class="pilwrap" id="backbone.history.resetquery(object%7Cstring%20query%2C%20object%20options)">
   <h3>
-    <a href="#backbone.history.resetquery(object%7Cstring%20query)" name="backbone.history.resetquery(object%7Cstring%20query)" class="pilcrow">&#182;</a>
-    Backbone.history.resetQuery(Object|String query)
+    <a href="#backbone.history.resetquery(object%7Cstring%20query%2C%20object%20options)" name="backbone.history.resetquery(object%7Cstring%20query%2C%20object%20options)" class="pilcrow">&#182;</a>
+    Backbone.history.resetQuery(Object|String query, Object options)
   </h3>
 </div>
 
@@ -318,6 +318,10 @@ will automatically fire the associated query handlers, much like calling
 <span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">resetQuery</span><span class="p">({</span><span class="nx">key</span><span class="o">:</span> <span class="s1">&#39;value&#39;</span><span class="p">},</span> <span class="p">{</span><span class="nx">trigger</span><span class="o">:</span> <span class="kc">false</span><span class="p">})</span>
 <span class="c1">// Don&#39;t trigger anything, including URL changes</span>
 <span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">resetQuery</span><span class="p">({</span><span class="nx">key</span><span class="o">:</span> <span class="s1">&#39;value&#39;</span><span class="p">},</span> <span class="p">{</span><span class="nx">silent</span><span class="o">:</span> <span class="kc">true</span><span class="p">})</span>
+<span class="c1">// Only set/unset certain keys</span>
+<span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">resetQuery</span><span class="p">({</span><span class="nx">key</span><span class="o">:</span> <span class="s1">&#39;value&#39;</span><span class="p">},</span> <span class="p">{</span><span class="nx">keys</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">,</span> <span class="s1">&#39;key2&#39;</span><span class="p">]})</span>
+<span class="c1">// Set, but don&#39;t unset</span>
+<span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">resetQuery</span><span class="p">({</span><span class="nx">key</span><span class="o">:</span> <span class="s1">&#39;value&#39;</span><span class="p">},</span> <span class="p">{</span><span class="nx">unset</span><span class="o">:</span> <span class="kc">false</span><span class="p">})</span>
 </code></pre></div>
 
 
