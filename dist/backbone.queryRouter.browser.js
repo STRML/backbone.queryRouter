@@ -326,10 +326,11 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
    */
   loadUrl: function(fragment) {
     var ret;
+    fragment = this.fragment = this.getFragment(fragment);
     if (this._previousBaseFragment !== this._stripQuery(fragment)) {
       ret = Backbone.History.prototype.loadUrl.apply(this, arguments);
     }
-    this.loadQuery(this, arguments);
+    this.loadQuery.apply(this, arguments);
     return ret !== undefined ? ret : true;
   },
 
