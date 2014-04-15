@@ -35,6 +35,7 @@ describe "Test listening to browser back/forward", ->
 
     hook2 = (queryObj, changedAttrs) ->
       expect(changedAttrs).toEqual(['bar'])
+      expect(queryObj).toEqual({bar: 'boof'})
       done()
 
     window.location.hash = '#queryTest?bar=boof'
