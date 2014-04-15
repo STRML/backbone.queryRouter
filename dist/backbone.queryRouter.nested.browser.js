@@ -775,18 +775,20 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
    * worrying about refiring route handlers.
    * 
    * @param  {String} fragment History fragment.
-   * @return {Boolean} True if a route was matched or if it hasn't changed. This allows you
+   * @return {Boolean} False iff the route changed and there were no matches. This allows you
    *   to still bind listeners that look for unmatched routes, e.g. backbone.routeNotFound.
    */
   loadUrl: function(fragment) {
+    var ret;
     if (this._previousBaseFragment !== this._stripQuery(fragment)) {
-      return Backbone.History.prototype.loadUrl.apply(this, arguments);
+      ret = Backbone.History.prototype.loadUrl.apply(this, arguments);
     }
-    return true;
+    this.loadQuery(this, arguments);
+    return ret !== undefined ? ret : true;
   },
 
   /**
-   * Add loadQuery hook.
+   * Add a few hooks to navigate to synchronize query model and so forth.
    *
    * @param {String} fragment History fragment.
    * @param {Object} options  Navigation options.
@@ -800,14 +802,6 @@ var QueryHistory = Backbone.History.extend( /** @lends QueryHistory# **/{
 
     // Call navigate on prototype.
     var ret = Backbone.History.prototype.navigate.call(this, fragment, options);
-
-    // Synchronize query model with fragment.
-    this._syncQueryModelFromFragment(this.fragment, {silent: !(options && options.trigger)});
-
-    // Fire querystring routes after normal routes.
-    if (options.trigger) {
-      this.loadQuery(fragment, options);
-    }
 
     return ret;
   },
