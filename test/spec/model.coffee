@@ -48,3 +48,13 @@ describe "Test model change events & query modulation", ->
       model.reset({foo: 'bar', baz: 'biff'})
       model.reset({foo: 'bar', baz: 'biff'})
       expect(changeSpy.calls.count()).toBe(1)
+
+    it "Accepts 'keys' option", ->
+      model = Backbone.history.query
+      attrs = {a: 'b', b: 'c', foo: 'bar'}
+      model.reset(attrs)
+      expect(model.attributes).toEqual(attrs)
+
+      model.reset({a: 'c', b: 'd'}, {keys: ['a', 'b']})
+      expect(model.attributes).toEqual({a: 'c', b: 'd', foo: 'bar'})
+

@@ -164,7 +164,7 @@ will automatically fire the associated query handlers, much like calling
 
 Call `Backbone.history.query.toString()` to get the current query string.
 
-### Backbone.history.resetQuery(Object|String query)
+### Backbone.history.resetQuery(Object|String query, Object options)
 
 Usage: 
 
@@ -177,6 +177,10 @@ Backbone.history.resetQuery("ignored/fragment?key=value&nested[key2]=value2")
 Backbone.history.resetQuery({key: 'value'}, {trigger: false})
 // Don't trigger anything, including URL changes
 Backbone.history.resetQuery({key: 'value'}, {silent: true})
+// Only set/unset certain keys
+Backbone.history.resetQuery({key: 'value'}, {keys: ['key', 'key2']})
+// Set, but don't unset
+Backbone.history.resetQuery({key: 'value'}, {unset: false})
 
 ```
 
