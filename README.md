@@ -219,3 +219,8 @@ In the nested build, querystring support is changed to
 [visionmedia/node-querystring](https://github.com/visionmedia/node-querystring), which supports nested attributes.
 It also includes keys in arrays, so be sure that your server can parse them correctly. For example,
 `{key: ['val1', 'val2']}` would be translated to `key[0]=val1&key[1]=val2`.
+
+License
+-------
+
+MIT
